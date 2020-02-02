@@ -1,5 +1,7 @@
 {
 	"name": "Core",
 	"runner": "runner.js",
-	"dependencies": {}
+	"dependencies": {
+		"readline": "*"
+	}
 }
