@@ -1,8 +1,9 @@
+const fs = require('fs');
 /*
 *	Create new project
 */
 	const new_project = function(params) {
-		console.log('Create new project', params);
+		console.log('Create new project', params[0]);
 		process.exit(1);
 	};
 	module.exports.new = new_project;
@@ -20,7 +21,10 @@
 *	Version Management
 */
 	const version = function(params){
-		console.log('waw: 1.0.0', params);
+		if (fs.existsSync(params.waw_root+'/package.json')) {
+			let config = JSON.parse(fs.readFileSync(params.waw_root+'/package.json'));
+			console.log('waw: ' + config.version);
+		}
 		process.exit(1);
 	}
 	module.exports['--version'] = version;
