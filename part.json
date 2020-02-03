@@ -1,6 +1,7 @@
 {
 	"name": "Core",
 	"runner": "runner.js",
+	"router": "index.js",
 	"dependencies": {
 		"readline": "*"
 	}
