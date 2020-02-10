@@ -1,5 +1,6 @@
 {
 	"name": "Core",
+	"priority": 1000,
 	"runner": "runner.js",
 	"router": "index.js",
 	"dependencies": {
