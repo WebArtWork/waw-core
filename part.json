@@ -3,6 +3,9 @@
 	"priority": 1000,
 	"runner": "runner.js",
 	"router": "index.js",
+	"git": {
+		"repo": "https://github.com/WebArtWork/core.git"
+	},
 	"dependencies": {
 		"readline": "*"
 	}

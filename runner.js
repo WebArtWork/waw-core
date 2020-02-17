@@ -32,5 +32,44 @@ const fs = require('fs');
 	module.exports.version = version;
 	module.exports.v = version;
 /*
+*	Git Management
+*/
+	const part = function(params){
+		if(!params.argv.length){
+			console.log('Please provide git command.');
+			process.exit(1);
+		}
+		let command = params.argv.shift();
+		if(!params.argv.length){
+			console.log('Please provide part name.');
+			process.exit(1);
+		}
+		let part = params.argv.shift();
+		if(!params._parts[part].git || !params._parts[part].git.repo){
+			console.log("Part don't have git config");
+			process.exit(1);
+		}
+		switch(command){
+			case 'fetch':
+				let repo = params.git(params._parts[part].__root);
+				repo.init(function(){
+					repo.addRemote('origin', params._parts[part].git.repo, function(err){
+						repo.fetch('--all', function(err){
+							repo.reset('origin/'+(params._parts[part].git.branch||'master'), ()=>{
+								console.log('Part has been fetched');
+								process.exit(1);
+							});
+						});
+					});
+				});
+				return true;
+			default:
+				console.log('Please provide correct git command. Type `waw part help`.');
+				process.exit(1);
+		}
+		return true;
+	}
+	module.exports.part = part;
+/*
 *	End of Core Runners
 */
