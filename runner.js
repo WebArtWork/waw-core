@@ -36,15 +36,19 @@ const fs = require('fs');
 */
 	const part = function(params){
 		if(!params.argv.length){
-			console.log('Please provide git command.');
+			console.log('Please provide git command');
 			process.exit(1);
 		}
 		let command = params.argv.shift();
 		if(!params.argv.length){
-			console.log('Please provide part name.');
+			console.log('Please provide part name');
 			process.exit(1);
 		}
 		let part = params.argv.shift();
+		if(!params._parts[part]){
+			console.log("There is no such part");
+			process.exit(1);
+		}
 		if(!params._parts[part].git || !params._parts[part].git.repo){
 			console.log("Part don't have git config");
 			process.exit(1);
@@ -62,12 +66,11 @@ const fs = require('fs');
 						});
 					});
 				});
-				return true;
+				return false;
 			default:
-				console.log('Please provide correct git command. Type `waw part help`.');
+				console.log('Please provide correct git command. Type `waw part help`');
 				process.exit(1);
 		}
-		return true;
 	}
 	module.exports.part = part;
 /*
