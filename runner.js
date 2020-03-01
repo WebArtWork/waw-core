@@ -34,12 +34,62 @@ const fs = require('fs');
 /*
 *	Git Management
 */
+	const generate = function(params){
+		if(!params.argv.length){
+			console.log('Please provide part name');
+			process.exit(1);
+		}
+		let name = params.argv.shift();
+		if(params._parts[name.toLowerCase()]){
+			console.log('This part already exists.');
+			process.exit(1);
+		}
+		const global_part = params.origin_argv[1].toLowerCase() == 'global' || params.origin_argv[1].toLowerCase() == 'pg';
+		if(global_part && !params.argv.length){
+			console.log('To install global part you has to provide repo link.');
+			process.exit(1);
+		}
+		let repo_link;
+		if(params.argv.length){
+			repo_link = params.argv.shift();
+		}
+		let folder = (global_part&&params.waw_root||process.cwd())+'/server/'+name;
+		fs.mkdirSync(folder, { recursive: true });
+		if(repo_link){
+			let repo = params.git(folder);
+			repo.init(function(){
+				repo.addRemote('origin', repo_link, function(err){
+					repo.fetch('--all', function(err){
+						let branch = 'master';
+						if(params.argv.length){
+							branch = params.argv.shift();
+						}
+						repo.reset('origin/'+branch, err=>{
+							console.log('Part has been created');
+							process.exit(1);
+						});
+					});
+				});
+			});
+		}else{
+			fs.writeFileSync(folder+'/router.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
+			let data = `{\n\t"name": "CNAME",\n\t"router": "router.js",\n\t"dependencies": {}\n}`;
+			data = data.split('CNAME').join(name.toString().charAt(0).toUpperCase() + name.toString().substr(1).toLowerCase());
+			data = data.split('NAME').join(name.toLowerCase());
+			fs.writeFileSync(folder+'/part.json', data, 'utf8');
+			console.log('Part has been created');
+			process.exit(1);
+		}
+	}
 	const part = function(params){
 		if(!params.argv.length){
 			console.log('Please provide git command');
 			process.exit(1);
 		}
-		let command = params.argv.shift();
+		let command = params.argv.shift().toLowerCase();
+		if(command == 'new' || command == 'global'){
+			return generate(params);
+		}
 		if(!params.argv.length){
 			console.log('Please provide part name');
 			process.exit(1);
@@ -73,6 +123,8 @@ const fs = require('fs');
 		}
 	}
 	module.exports.part = part;
+	module.exports.pn = generate;
+	module.exports.pg = generate;
 /*
 *	End of Core Runners
 */
