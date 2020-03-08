@@ -125,6 +125,20 @@ const fs = require('fs');
 	module.exports.part = part;
 	module.exports.pn = generate;
 	module.exports.pg = generate;
+
+	module.exports.renew = function(params){
+		let repo = params.git(params.waw_root);
+		repo.init(function(){
+			repo.addRemote('origin', 'https://github.com/WebArtWork/waw.git', function(err){
+				repo.fetch('--all', function(err){
+					repo.reset('origin/dev', err=>{
+						console.log('Framework has been updated');
+						process.exit(1);
+					});
+				});
+			});
+		});
+	};
 /*
 *	End of Core Runners
 */
