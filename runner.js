@@ -1,4 +1,21 @@
 const fs = require('fs');
+const isDirectory = source => fs.lstatSync(source).isDirectory();
+const getDirectories = source => {
+	if (!fs.existsSync(source)) {
+		return []; 
+	}
+	return fs.readdirSync(source).map(name => require('path').join(source, name)).filter(isDirectory);
+}
+const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
+	let git_repo = git(location);
+	git_repo.init(function(){
+		git_repo.addRemote('origin', repo, function(err){
+			git_repo.fetch('--all', function(err){
+				git_repo.reset('origin/'+branch, cb);
+			});
+		});
+	});
+}
 /*
 *	Create new project
 */
@@ -81,6 +98,28 @@ const fs = require('fs');
 			process.exit(1);
 		}
 	}
+	const parts_renew = function(params){
+		let parts = getDirectories(params.waw_root+'/server');
+		let counter = 0;
+		for (var i = 0; i < parts.length; i++) {
+			if (fs.existsSync(parts[i]+'/part.json')) {
+				let config = JSON.parse(fs.readFileSync(parts[i]+'/part.json'));
+				if(config.git && config.git.repo){
+					counter++;
+					git_fetch(params.git, parts[i], config.git.repo, config.git.branch||'master', ()=>{
+						if(--counter === 0){
+							console.log('All global parts has been updated');
+							process.exit(1);
+						}
+					});
+				}
+			}
+		}
+		if(!counter){
+			console.log('All global parts has been updated');
+			process.exit(1);
+		}
+	}
 	const part = function(params){
 		if(!params.argv.length){
 			console.log('Please provide git command');
@@ -104,6 +143,8 @@ const fs = require('fs');
 			process.exit(1);
 		}
 		switch(command){
+			case 'renew':
+				return parts_renew(params);
 			case 'fetch':
 				let repo = params.git(params._parts[part].__root);
 				repo.init(function(){
@@ -123,20 +164,14 @@ const fs = require('fs');
 		}
 	}
 	module.exports.part = part;
+	module.exports.pr = parts_renew;
 	module.exports.pn = generate;
 	module.exports.pg = generate;
 
 	module.exports.renew = function(params){
-		let repo = params.git(params.waw_root);
-		repo.init(function(){
-			repo.addRemote('origin', 'https://github.com/WebArtWork/waw.git', function(err){
-				repo.fetch('--all', function(err){
-					repo.reset('origin/dev', err=>{
-						console.log('Framework has been updated');
-						process.exit(1);
-					});
-				});
-			});
+		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
+			console.log('Framework has been updated');
+			process.exit(1);
 		});
 	};
 /*
