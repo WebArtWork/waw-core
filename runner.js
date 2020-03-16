@@ -175,5 +175,49 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		});
 	};
 /*
+*	PM2 management
+*/
+	let pm2;
+	const start = function(params){
+		if (!fs.existsSync(__dirname+'/node_modules/pm2')) {
+			return params.npmi({
+				name: 'pm2',
+				version: 'latest',
+				path: __dirname,
+				forceInstall: true,
+				npmLoad: {
+					loglevel: 'silent'
+				}
+			}, function(){
+				start(params);
+			});
+		}
+		if(!pm2) pm2 = require('pm2');
+		pm2.connect(function(err) {
+			if (err) {
+				console.error(err);
+				process.exit(2);
+			}
+			pm2.start({
+				name: params.config.name||process.cwd(),
+				script: params.waw_root+'/app.js',
+				exec_mode: 'cluster',
+				instances: 1,
+				max_memory_restart: '200M'
+			}, function(err, apps) {
+				pm2.disconnect();
+				process.exit(2);
+			});
+		});
+	}
+	const stop = function(){}
+	const restart = function(){}
+	module.exports.server = function(params){
+		if(!params.argv.length){
+			return start(params);
+		}
+		
+	};
+/*
 *	End of Core Runners
 */

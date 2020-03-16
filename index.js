@@ -73,4 +73,10 @@ module.exports = function(waw){
 			}
 		}else callback();
 	}
+	waw.dataUrlToLocation = function(dataUrl, loc, file, cb){
+		var base64Data = dataUrl.replace(/^data:image\/png;base64,/, '').replace(/^data:image\/jpeg;base64,/, '');
+		var decodeData = new Buffer(base64Data, 'base64');
+		waw.fs.mkdirSync(loc, { recursive: true });
+		waw.fs.writeFile(loc+'/'+file, decodeData, cb);
+	}
 }
