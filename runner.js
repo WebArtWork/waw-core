@@ -214,7 +214,8 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	const restart = function(){}
 	module.exports.server = function(params){
 		if(!params.argv.length){
-			return start(params);
+			start(params);
+			return;
 		}
 		
 	};
