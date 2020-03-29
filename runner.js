@@ -203,7 +203,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				script: params.waw_root+'/app.js',
 				exec_mode: 'cluster',
 				instances: 1,
-				max_memory_restart: '200M'
+				max_memory_restart: '800M'
 			}, function(err, apps) {
 				pm2.disconnect();
 				process.exit(2);
