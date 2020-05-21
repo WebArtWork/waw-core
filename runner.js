@@ -107,6 +107,10 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Create new part
 */
 	const new_part = function(params) {
+		if (!fs.existsSync(process.cwd()+'/config.json')) {
+			console.log('You are located not in waw project');
+			process.exit(0);
+		}
 		if(!params.new_part) params.new_part={};
 		if(!params.new_part.name){
 			if(params.argv.length){
