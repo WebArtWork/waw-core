@@ -24,7 +24,6 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 /*
 *	Create new project
 */
-
 	const list = {
 		'1) Angular New': 'https://github.com/WebArtWork/wawNgx.git',
 		'2) React New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
@@ -47,7 +46,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		if(!params.new_project.name){
 			if(params.argv.length){
 				if (fs.existsSync(process.cwd()+'/'+params.argv[0])) {
-					console.log('This project already exists in current directoy');
+					console.log('This project already exists in current directory');
 					process.exit(0);
 				}else{
 					params.new_project.name = params.argv[0];
@@ -56,7 +55,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				return readline.question('Provide name for the part you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer)) {
-							console.log('This project already exists in current directoy');
+							console.log('This project already exists in current directory');
 						}else{
 							params.new_project.name = answer;
 						}
@@ -107,12 +106,43 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 /*
 *	Create new part
 */
-	const add = function(params) {
-		console.log('Create new part', params);
+	const new_part = function(params) {
+		if(!params.new_part) params.new_part={};
+		if(!params.new_part.name){
+			if(params.argv.length){
+				if (fs.existsSync(process.cwd()+'/server/'+params.argv[0].toLowerCase())) {
+					console.log('This part already exists in current project');
+					process.exit(0);
+				}else{
+					params.new_part.name = params.argv[0];
+				}
+			}else{
+				return readline.question('Provide name for the part you want to create: ', function(answer){
+					if(answer){
+						if (fs.existsSync(process.cwd()+'/'+answer.toLowerCase())) {
+							console.log('This part already exists in current project');
+						}else{
+							params.new_part.name = answer;
+						}
+					}else{
+						console.log('Please type your project name');
+					}
+					new_part(params);
+				});
+			}
+		}
+		let folder = process.cwd()+'/server/'+params.new_part.name.toLowerCase();
+		fs.mkdirSync(folder, { recursive: true });
+		fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
+		let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
+		data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
+		data = data.split('NAME').join(params.new_part.name.toLowerCase());
+		fs.writeFileSync(folder+'/part.json', data, 'utf8');
+		console.log('Part has been created');
 		process.exit(1);
 	};
-	module.exports.add = add;
-	module.exports.a = add;
+	module.exports.add = new_part;
+	module.exports.a = new_part;
 /*
 *	Version Management
 */
@@ -176,8 +206,8 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				});
 			});
 		}else{
-			fs.writeFileSync(folder+'/router.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
-			let data = `{\n\t"name": "CNAME",\n\t"router": "router.js",\n\t"dependencies": {}\n}`;
+			fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
+			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
 			data = data.split('CNAME').join(name.toString().charAt(0).toUpperCase() + name.toString().substr(1).toLowerCase());
 			data = data.split('NAME').join(name.toLowerCase());
 			fs.writeFileSync(folder+'/part.json', data, 'utf8');
@@ -254,7 +284,6 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	module.exports.pr = parts_renew;
 	module.exports.pn = generate;
 	module.exports.pg = generate;
-
 	module.exports.renew = function(params){
 		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
 			console.log('Framework has been updated');
