@@ -39,10 +39,17 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 */
 	const version = function(params){
 		if (fs.existsSync(params.waw_root+'/package.json')) {
-			let config = JSON.parse(fs.readFileSync(params.waw_root+'/package.json'));
-			console.log('waw: ' + config.version);
+			try{
+				let config = JSON.parse(fs.readFileSync(params.waw_root+'/package.json'));
+				if(config.version){
+					console.log('waw: ' + config.version);
+				}else{
+					console.log('Missing files, try to reinstall waw framework.');
+				}
+			}catch(err){
+				console.log('Missing files, try to reinstall waw framework.');
+			}
 		}
-		process.exit(1);
 	}
 	module.exports['--version'] = version;
 	module.exports['-v'] = version;
