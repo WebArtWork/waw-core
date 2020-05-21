@@ -1,4 +1,9 @@
 const fs = require('fs');
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 const isDirectory = source => fs.lstatSync(source).isDirectory();
 const getDirectories = source => {
 	if (!fs.existsSync(source)) {
@@ -19,9 +24,83 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 /*
 *	Create new project
 */
+
+	const list = {
+		'1) Angular New': 'https://github.com/WebArtWork/wawNgx.git',
+		'2) React New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'3) Vue New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'4) Angular CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'5) React CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'6) Vue CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'7) Angular eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'8) React eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'9) Vue eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'10) Angular Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'11) React Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'12) Vue Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'13) Angular Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'13) React Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
+		'14) Vue Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git'
+	};
 	const new_project = function(params) {
-		console.log('Create new project', params[0]);
-		process.exit(1);
+		if(!params.new_project) params.new_project={};
+		if(!params.new_project.name){
+			if(params.argv.length){
+				if (fs.existsSync(process.cwd()+'/'+params.argv[0])) {
+					console.log('This project already exists in current directoy');
+					process.exit(0);
+				}else{
+					params.new_project.name = params.argv[0];
+				}
+			}else{
+				return readline.question('Provide name for the part you want to create: ', function(answer){
+					if(answer){
+						if (fs.existsSync(process.cwd()+'/'+answer)) {
+							console.log('This project already exists in current directoy');
+						}else{
+							params.new_project.name = answer;
+						}
+					}else{
+						console.log('Please type your project name');
+					}
+					new_project(params);
+				});
+			}
+		}
+		if(!params.new_project.repo){
+			if(params.argv.length>1){
+				params.new_project.repo = params.argv[1];				
+			}else{
+				let text = 'Which project you want to start with?', counter=0, repos={};
+				for(let key in list){
+					repos[++counter] = list[key];
+					text += '\n'+key;
+				}
+				text += '\nChoose number: ';
+				return readline.question(text, function(answer){
+					if(!answer||!repos[parseInt(answer)]) return new_project();
+					params.new_project.repo = repos[parseInt(answer)];
+					new_project(params);					
+				});
+			}
+		}
+		let folder = process.cwd()+'/'+params.new_project.name;
+		fs.mkdirSync(folder, { recursive: true });
+		let repo = params.git(folder);
+		repo.init(function(){
+			repo.addRemote('origin', params.new_project.repo, function(err){
+				repo.fetch('--all', function(err){
+					let branch = 'master';
+					if(params.argv.length>2){
+						branch = params.argv[2];
+					}
+					repo.reset('origin/'+branch, err=>{
+						console.log('Your project has been generated successfully');
+						process.exit(1);
+					});
+				});
+			});
+		});
 	};
 	module.exports.new = new_project;
 	module.exports.n = new_project;
@@ -50,6 +129,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				console.log('Missing files, try to reinstall waw framework.');
 			}
 		}
+		process.exit(1);
 	}
 	module.exports['--version'] = version;
 	module.exports['-v'] = version;
