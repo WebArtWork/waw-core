@@ -3,17 +3,17 @@ Core [waw](https://webart.work) commands which will be useful on any kind of pro
 
 ## Runners
 ### Generate new project from waw list of repo's
-`waw new PROJECT_NAME REPO_LINK BRANCH`
-`waw new`
+`waw new PROJECT_NAME REPO_LINK BRANCH`<br>
+`waw new`<br>
 `waw n`
 ### Generate new part
-`waw add PART_NAME REPO_LINK BRANCH`
-`waw add`
+`waw add PART_NAME REPO_LINK BRANCH`<br>
+`waw add`<br>
 `waw a`
 ### Get waw framework version and versions of all accessible parts
-`waw --version`
-`waw --v`
-`waw version`
+`waw --version`<br>
+`waw --v`<br>
+`waw version`<br>
 `waw v`
 ### Start pm2 server
 `waw start`

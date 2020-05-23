@@ -144,15 +144,34 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				});
 			}
 		}
-		let folder = process.cwd()+'/server/'+params.new_part.name.toLowerCase();
-		fs.mkdirSync(folder, { recursive: true });
-		fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
-		let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
-		data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
-		data = data.split('NAME').join(params.new_part.name.toLowerCase());
-		fs.writeFileSync(folder+'/part.json', data, 'utf8');
-		console.log('Part has been created');
-		process.exit(1);
+		let folder = process.cwd()+'/server/'+params.new_project.name;
+		if(params.argv.length > 1){
+			fs.mkdirSync(folder, { recursive: true });
+			let repo = params.git(folder);
+			repo.init(function(){
+				repo.addRemote('origin', params.argv[1], function(err){
+					repo.fetch('--all', function(err){
+						let branch = 'master';
+						if(params.argv.length>2){
+							branch = params.argv[2];
+						}
+						repo.reset('origin/'+branch, err=>{
+							console.log('Part has been created');
+							process.exit(1);
+						});
+					});
+				});
+			});
+		}else{
+			fs.mkdirSync(folder, { recursive: true });
+			fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
+			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
+			data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
+			data = data.split('NAME').join(params.new_part.name.toLowerCase());
+			fs.writeFileSync(folder+'/part.json', data, 'utf8');
+			console.log('Part has been created');
+			process.exit(1);
+		}
 	};
 	module.exports.add = new_part;
 	module.exports.a = new_part;
@@ -160,18 +179,33 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Version Management
 */
 	const version = function(params){
+		let logs = '';
 		if (fs.existsSync(params.waw_root+'/package.json')) {
 			try{
 				let config = JSON.parse(fs.readFileSync(params.waw_root+'/package.json'));
 				if(config.version){
-					console.log('waw: ' + config.version);
+					logs = 'waw: ' + config.version;
 				}else{
 					console.log('Missing files, try to reinstall waw framework.');
+					process.exit(1);
 				}
 			}catch(err){
 				console.log('Missing files, try to reinstall waw framework.');
+				process.exit(1);
 			}
 		}
+		if(params.parts.length){
+			logs += '\nAccesible Parts: ';
+			for (var i = 0; i < params.parts.length; i++) {
+				if(i){
+					logs += ', '+params.parts[i];
+				}else{
+					logs += params.parts[i];
+				}
+			}
+
+		}
+		console.log(logs);
 		process.exit(1);
 	}
 	module.exports['--version'] = version;
