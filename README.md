@@ -23,6 +23,8 @@ Core [waw](https://webart.work) commands which will be useful on any kind of pro
 `waw restart`
 
 ## waw Script
+### Object which forms from config.json plus server.json if such exists
+`waw.config`
 ### Parallel allow you to execute many different kind of async requests and after all finish you can run the final callback.
 `waw.parallel([ function(next){ next() }, function(next){ next() }], function(){ //end })`
 ### Serial execute an array of functions one by one
