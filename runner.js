@@ -22,6 +22,15 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	});
 }
 /*
+*	Framework update
+*/
+	module.exports.renew = function(params){
+		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
+			console.log('Framework has been updated');
+			process.exit(1);
+		});
+	};
+/*
 *	Create new project
 */
 	const list = {
@@ -52,7 +61,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 					params.new_project.name = params.argv[0];
 				}
 			}else{
-				return readline.question('Provide name for the part you want to create: ', function(answer){
+				return readline.question('Provide name for the project you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer)) {
 							console.log('This project already exists in current directory');
@@ -288,12 +297,6 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	module.exports.pr = parts_renew;
 	module.exports.pn = generate;
 	module.exports.pg = generate;
-	module.exports.renew = function(params){
-		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
-			console.log('Framework has been updated');
-			process.exit(1);
-		});
-	};
 /*
 *	PM2 management
 */
@@ -332,7 +335,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	}
 	const stop = function(){}
 	const restart = function(){}
-	module.exports.server = function(params){
+	module.exports.start = function(params){
 		if(!params.argv.length){
 			start(params);
 			return;
