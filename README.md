@@ -23,8 +23,16 @@ Core [waw](https://webart.work) commands which will be useful on any kind of pro
 `waw restart`
 
 ## waw Script
-### Add new part, which represent piece of back-end
-`waw add`
+### Parallel allow you to execute many different kind of async requests and after all finish you can run the final callback.
+`waw.parallel([ function(next){ next() }, function(next){ next() }], function(){ //end })`
+### Serial execute an array of functions one by one
+`waw.serial(arr, callback)`
+### Each accept an array or an object, parse each by one functiona and execute callback when that is finished, by isSerial=true you will make those parses by serial
+`waw.each(arrOrObj, func, callback, isSerial)`
+### Data Url To Location take an dataUrl content and make it local file
+`waw.dataUrlToLocation(dataUrl, folder, file, callback)`
+### Exe execute an terminal command within code
+`waw.exe(command, callback)`
 
 ## Contributing
 Thanks for your interest in contributing! Read up on our guidelines for
