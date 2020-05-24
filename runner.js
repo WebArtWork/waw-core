@@ -35,20 +35,20 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 */
 	const list = {
 		'1) Angular New': 'https://github.com/WebArtWork/wawNgx.git',
-		'2) React New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'3) Vue New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'4) Angular CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'5) React CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'6) Vue CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'7) Angular eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'8) React eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'9) Vue eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'10) Angular Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'11) React Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'12) Vue Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'13) Angular Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'13) React Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'14) Vue Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git'
+		'2) React New': 'https://github.com/WebArtWork/wawReact.git',
+		'3) Vue New': 'https://github.com/WebArtWork/wawVue.git',
+		'4) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
+		'5) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
+		'6) Vue CRM': 'https://github.com/WebArtWork/wawVueCrm.git',
+		'7) Angular eCommerce': 'https://github.com/WebArtWork/wawNgxeCommerce.git',
+		'8) React eCommerce': 'https://github.com/WebArtWork/wawReacteCommerce.git',
+		'9) Vue eCommerce': 'https://github.com/WebArtWork/wawVueeCommerce.git',
+		'10) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
+		'11) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
+		'12) Vue Social Network': 'https://github.com/WebArtWork/wawVueSocial.git',
+		'13) Angular Profile': 'https://github.com/WebArtWork/wawNgxProfile.git',
+		'13) React Profile': 'https://github.com/WebArtWork/wawReactProfile.git',
+		'14) Vue Profile': 'https://github.com/WebArtWork/wawVueProfile.git'
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
@@ -335,7 +335,8 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	PM2 management
 */
 	let pm2;
-	const start = function(params){
+	const install_pm2 = function(callback){
+		if(pm2) return callback();
 		if (!fs.existsSync(__dirname+'/node_modules/pm2')) {
 			return params.npmi({
 				name: 'pm2',
@@ -355,6 +356,11 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				console.error(err);
 				process.exit(2);
 			}
+			callback();
+		});
+	}
+	const start = function(params){
+		install_pm2(function(){
 			pm2.start({
 				name: params.config.name||process.cwd(),
 				script: params.waw_root+'/app.js',
@@ -367,15 +373,22 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			});
 		});
 	}
-	const stop = function(){}
-	const restart = function(){}
-	module.exports.start = function(params){
-		if(!params.argv.length){
-			start(params);
-			return;
-		}
-		
-	};
+	module.exports.start = start;
+	const stop = function(params){
+		install_pm2(function(){
+			pm2.stop(params.config.name||process.cwd(), function(err, apps) {
+				pm2.disconnect();
+				process.exit(2);
+			});
+		});
+	}
+	module.exports.stop = stop;
+	const restart = function(params){
+		install_pm2(function(){
+			pm2.restart(params.config.name||process.cwd());
+		});
+	}
+	module.exports.restart = restart;
 /*
 *	End of Core Runners
 */
