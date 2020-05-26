@@ -22,24 +22,33 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	});
 }
 /*
+*	Framework update
+*/
+	module.exports.renew = function(params){
+		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
+			console.log('Framework has been updated');
+			process.exit(1);
+		});
+	};
+/*
 *	Create new project
 */
 	const list = {
 		'1) Angular New': 'https://github.com/WebArtWork/wawNgx.git',
-		'2) React New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'3) Vue New [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'4) Angular CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'5) React CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'6) Vue CRM [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'7) Angular eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'8) React eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'9) Vue eCommerce [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'10) Angular Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'11) React Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'12) Vue Social Network [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'13) Angular Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'13) React Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git',
-		'14) Vue Profile [under construction]': 'https://github.com/WebArtWork/wawNgx.git'
+		'2) React New': 'https://github.com/WebArtWork/wawReact.git',
+		'3) Vue New': 'https://github.com/WebArtWork/wawVue.git',
+		'4) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
+		'5) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
+		'6) Vue CRM': 'https://github.com/WebArtWork/wawVueCrm.git',
+		'7) Angular eCommerce': 'https://github.com/WebArtWork/wawNgxeCommerce.git',
+		'8) React eCommerce': 'https://github.com/WebArtWork/wawReacteCommerce.git',
+		'9) Vue eCommerce': 'https://github.com/WebArtWork/wawVueeCommerce.git',
+		'10) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
+		'11) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
+		'12) Vue Social Network': 'https://github.com/WebArtWork/wawVueSocial.git',
+		'13) Angular Profile': 'https://github.com/WebArtWork/wawNgxProfile.git',
+		'13) React Profile': 'https://github.com/WebArtWork/wawReactProfile.git',
+		'14) Vue Profile': 'https://github.com/WebArtWork/wawVueProfile.git'
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
@@ -52,7 +61,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 					params.new_project.name = params.argv[0];
 				}
 			}else{
-				return readline.question('Provide name for the part you want to create: ', function(answer){
+				return readline.question('Provide name for the project you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer)) {
 							console.log('This project already exists in current directory');
@@ -135,15 +144,34 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				});
 			}
 		}
-		let folder = process.cwd()+'/server/'+params.new_part.name.toLowerCase();
-		fs.mkdirSync(folder, { recursive: true });
-		fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
-		let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
-		data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
-		data = data.split('NAME').join(params.new_part.name.toLowerCase());
-		fs.writeFileSync(folder+'/part.json', data, 'utf8');
-		console.log('Part has been created');
-		process.exit(1);
+		let folder = process.cwd()+'/server/'+params.new_project.name;
+		if(params.argv.length > 1){
+			fs.mkdirSync(folder, { recursive: true });
+			let repo = params.git(folder);
+			repo.init(function(){
+				repo.addRemote('origin', params.argv[1], function(err){
+					repo.fetch('--all', function(err){
+						let branch = 'master';
+						if(params.argv.length>2){
+							branch = params.argv[2];
+						}
+						repo.reset('origin/'+branch, err=>{
+							console.log('Part has been created');
+							process.exit(1);
+						});
+					});
+				});
+			});
+		}else{
+			fs.mkdirSync(folder, { recursive: true });
+			fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
+			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
+			data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
+			data = data.split('NAME').join(params.new_part.name.toLowerCase());
+			fs.writeFileSync(folder+'/part.json', data, 'utf8');
+			console.log('Part has been created');
+			process.exit(1);
+		}
 	};
 	module.exports.add = new_part;
 	module.exports.a = new_part;
@@ -151,18 +179,33 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Version Management
 */
 	const version = function(params){
+		let logs = '';
 		if (fs.existsSync(params.waw_root+'/package.json')) {
 			try{
 				let config = JSON.parse(fs.readFileSync(params.waw_root+'/package.json'));
 				if(config.version){
-					console.log('waw: ' + config.version);
+					logs = 'waw: ' + config.version;
 				}else{
 					console.log('Missing files, try to reinstall waw framework.');
+					process.exit(1);
 				}
 			}catch(err){
 				console.log('Missing files, try to reinstall waw framework.');
+				process.exit(1);
 			}
 		}
+		if(params.parts.length){
+			logs += '\nAccesible Parts: ';
+			for (var i = 0; i < params.parts.length; i++) {
+				if(i){
+					logs += ', '+params.parts[i];
+				}else{
+					logs += params.parts[i];
+				}
+			}
+
+		}
+		console.log(logs);
 		process.exit(1);
 	}
 	module.exports['--version'] = version;
@@ -288,17 +331,12 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	module.exports.pr = parts_renew;
 	module.exports.pn = generate;
 	module.exports.pg = generate;
-	module.exports.renew = function(params){
-		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
-			console.log('Framework has been updated');
-			process.exit(1);
-		});
-	};
 /*
 *	PM2 management
 */
 	let pm2;
-	const start = function(params){
+	const install_pm2 = function(callback){
+		if(pm2) return callback();
 		if (!fs.existsSync(__dirname+'/node_modules/pm2')) {
 			return params.npmi({
 				name: 'pm2',
@@ -318,7 +356,15 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				console.error(err);
 				process.exit(2);
 			}
+<<<<<<< HEAD
 			if(!params.config.pm2) params.config.pm2={};
+=======
+			callback();
+		});
+	}
+	const start = function(params){
+		install_pm2(function(){
+>>>>>>> f8b501bd43a7a389551eafb42aadfb0b6fb8f0bc
 			pm2.start({
 				name: params.config.name||process.cwd(),
 				script: params.waw_root+'/app.js',
@@ -331,15 +377,22 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			});
 		});
 	}
-	const stop = function(){}
-	const restart = function(){}
-	module.exports.server = function(params){
-		if(!params.argv.length){
-			start(params);
-			return;
-		}
-		
-	};
+	module.exports.start = start;
+	const stop = function(params){
+		install_pm2(function(){
+			pm2.stop(params.config.name||process.cwd(), function(err, apps) {
+				pm2.disconnect();
+				process.exit(2);
+			});
+		});
+	}
+	module.exports.stop = stop;
+	const restart = function(params){
+		install_pm2(function(){
+			pm2.restart(params.config.name||process.cwd());
+		});
+	}
+	module.exports.restart = restart;
 /*
 *	End of Core Runners
 */
