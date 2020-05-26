@@ -318,12 +318,13 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				console.error(err);
 				process.exit(2);
 			}
+			if(!params.config.pm2) params.config.pm2={};
 			pm2.start({
 				name: params.config.name||process.cwd(),
 				script: params.waw_root+'/app.js',
-				exec_mode: 'cluster',
-				instances: 1,
-				max_memory_restart: '800M'
+				//exec_mode: 'cluster', //default fork
+				instances: params.config.pm2.instances||1,
+				max_memory_restart: params.config.pm2.memory||'800M'
 			}, function(err, apps) {
 				pm2.disconnect();
 				process.exit(2);

@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const fs = require('fs');
 module.exports = function(waw){
 	waw.parallel = function(arr, callback){
 		let counter = arr.length;
@@ -76,9 +77,9 @@ module.exports = function(waw){
 	}
 	waw.dataUrlToLocation = function(dataUrl, loc, file, cb){
 		var base64Data = dataUrl.replace(/^data:image\/png;base64,/, '').replace(/^data:image\/jpeg;base64,/, '');
-		var decodeData = new Buffer(base64Data, 'base64');
-		waw.fs.mkdirSync(loc, { recursive: true });
-		waw.fs.writeFile(loc+'/'+file, decodeData, cb);
+		var decodeData = Buffer.from(base64Data, 'base64');
+		fs.mkdirSync(loc, { recursive: true });
+		fs.writeFile(loc+'/'+file, decodeData, cb);
 	}
 	waw.exe = function(command, cb=()=>{}){
 		if(!command) return cb();
