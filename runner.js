@@ -356,15 +356,12 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				console.error(err);
 				process.exit(2);
 			}
-<<<<<<< HEAD
 			if(!params.config.pm2) params.config.pm2={};
-=======
 			callback();
 		});
 	}
 	const start = function(params){
 		install_pm2(function(){
->>>>>>> f8b501bd43a7a389551eafb42aadfb0b6fb8f0bc
 			pm2.start({
 				name: params.config.name||process.cwd(),
 				script: params.waw_root+'/app.js',
