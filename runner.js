@@ -335,13 +335,13 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	PM2 management
 */
 	let pm2;
-	const install_pm2 = function(callback){
+	const install_pm2 = function(params, callback){
 		if(pm2) return callback();
-		if (!fs.existsSync(__dirname+'/node_modules/pm2')) {
+		if (!fs.existsSync(params.waw_root+'/node_modules/pm2')) {
 			return params.npmi({
 				name: 'pm2',
 				version: 'latest',
-				path: __dirname,
+				path: params.waw_root,
 				forceInstall: true,
 				npmLoad: {
 					loglevel: 'silent'
@@ -350,7 +350,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				start(params);
 			});
 		}
-		if(!pm2) pm2 = require('pm2');
+		if(!pm2) pm2 = require(params.waw_root+'/node_modules/pm2');
 		pm2.connect(function(err) {
 			if (err) {
 				console.error(err);
@@ -361,11 +361,11 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		});
 	}
 	const start = function(params){
-		install_pm2(function(){
+		install_pm2(params, function(){
 			pm2.start({
 				name: params.config.name||process.cwd(),
 				script: params.waw_root+'/app.js',
-				//exec_mode: 'cluster', //default fork
+				exec_mode: params.config.pm2.exec_mode||'fork', //default fork
 				instances: params.config.pm2.instances||1,
 				max_memory_restart: params.config.pm2.memory||'800M'
 			}, function(err, apps) {
@@ -376,8 +376,8 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	}
 	module.exports.start = start;
 	const stop = function(params){
-		install_pm2(function(){
-			pm2.stop(params.config.name||process.cwd(), function(err, apps) {
+		install_pm2(params, function(){
+			pm2.delete(params.config.name||process.cwd(), function(err, apps) {
 				pm2.disconnect();
 				process.exit(2);
 			});
@@ -385,7 +385,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	}
 	module.exports.stop = stop;
 	const restart = function(params){
-		install_pm2(function(){
+		install_pm2(params, function(){
 			pm2.restart(params.config.name||process.cwd());
 		});
 	}
