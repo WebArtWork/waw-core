@@ -22,15 +22,6 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	});
 }
 /*
-*	Framework update
-*/
-	module.exports.renew = function(params){
-		git_fetch(params.git, params.waw_root, 'https://github.com/WebArtWork/waw.git', 'dev', ()=>{
-			console.log('Framework has been updated');
-			process.exit(1);
-		});
-	};
-/*
 *	Create new project
 */
 	const list = {
