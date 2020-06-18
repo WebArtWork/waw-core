@@ -87,4 +87,15 @@ module.exports = function(waw){
 			cb({err, stdout, stderr});
 		});
 	}
+	let events = {};
+	waw.on = function(event, cb){
+		if(!events[event]) events[event]=[];
+		if(typeof cb == 'function') events[event].push(cb);
+	}
+	waw.emit = function(event, info){
+		if(!events[event]) events[event]=[];
+		for (var i = 0; i < events[event].length; i++) {
+			events[event][i](info);
+		}
+	}
 }
