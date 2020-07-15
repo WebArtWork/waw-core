@@ -81,34 +81,35 @@ module.exports = function(waw){
 		fs.mkdirSync(loc, { recursive: true });
 		fs.writeFile(loc+'/'+file, decodeData, cb);
 	}
-	waw.files = function(part, dirname, schema, ensure){
-		waw.app.post("/api/"+part+"/avatar", ensure || waw.role('admin'), function(req, res) {
-			schema.findOne({
+	waw.files = function(opts){
+		waw.app.post("/api/"+opts.part+"/avatar", opts.ensure || waw.role('admin'), function(req, res) {
+			opts.schema.findOne(opts.query || {
 				_id: req.body._id
 			}, function(err, doc) {
-				doc.thumb = '/api/'+part+'/avatar/' + doc._id + '.jpg?' + Date.now();
+				if(err || !doc) return res.send(false);
+				doc.thumb = '/api/'+opts.part+'/avatar/' + doc._id + '.jpg?' + Date.now();
 				waw.parallel([function(n) {
 					doc.save(n);
 				}, function(n) {
-					waw.dataUrlToLocation(req.body.dataUrl, dirname, doc._id + '.jpg', n);
+					waw.dataUrlToLocation(req.body.dataUrl, opts.dirname, doc._id + '.jpg', n);
 				}], function() {
 					res.json(doc.thumb);
 				});
 			});
 		});
-		waw.app.post("/api/"+part+"/avatars", ensure || waw.role('admin'), function(req, res) {
+		waw.app.post("/api/"+opts.part+"/avatars", opts.ensure || waw.role('admin'), function(req, res) {
 			let custom = waw._mongoose.Types.ObjectId();
-			let url = '/api/'+part+'/avatar/' + custom + '.jpg?' + Date.now();
+			let url = '/api/'+opts.part+'/avatar/' + custom + '.jpg?' + Date.now();
 			waw.parallel([function(done) {
-				schema.update({ _id: req.body._id }, { $push: { thumbs: url } }, done);
+				opts.schema.update(opts.query || { _id: req.body._id }, { $push: { thumbs: url } }, done);
 			}, function(n) {
-				waw.dataUrlToLocation(req.body.dataUrl, dirname, custom + '.jpg', n);
+				waw.dataUrlToLocation(req.body.dataUrl, opts.dirname, custom + '.jpg', n);
 			}], function() {
 				res.json(url);
 			});
 		});
-		waw.app.get("/api/"+part+"/avatar/:file", function(req, res) {
-			res.sendFile(dirname + req.params.file);
+		waw.app.get("/api/"+opts.part+"/avatar/:file", function(req, res) {
+			res.sendFile(opts.dirname + req.params.file);
 		});
 	}
 	waw.exe = function(command, cb=()=>{}){
