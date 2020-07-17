@@ -112,6 +112,22 @@ module.exports = function(waw){
 			res.sendFile(opts.dirname + req.params.file);
 		});
 	}
+	waw.ensure_files = function(extra){
+		return function(req, res, next){
+			if(req.body.thumb){
+				if(!req.body._id) req.body._id = mongoose.Types.ObjectId();
+				let dataUrl = req.body.thumb;
+				req.body.thumb = '/api/product/avatar/' + req.body._id + '.jpg?' + Date.now();
+				waw.dataUrlToLocation(dataUrl, __dirname+'/files/', req.body._id + '.jpg', ()=>{
+					if(extra) extra(req, res, next);
+					else next();
+				});
+			}else{
+				if(extra) extra(req, res, next);
+				else next();
+			}
+		}
+	}
 	waw.exe = function(command, cb=()=>{}){
 		if(!command) return cb();
 		exec(command, (err, stdout, stderr) => {
