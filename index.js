@@ -70,7 +70,7 @@ module.exports = function(waw){
 						counter++;
 						func(each, arrOrObj[each], function(){
 							if(--counter===0) callback();
-						}, i);
+						});
 					}
 					if(--counter===0) callback();
 				}

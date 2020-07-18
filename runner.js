@@ -25,7 +25,9 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Create new project
 */
 	const list = {
-		'1) Angular New': 'https://github.com/WebArtWork/wawNgx.git',
+		'1) Angular': 'https://github.com/WebArtWork/wawNgx.git',
+		'2) Template': 'https://github.com/WebArtWork/wawTemplate.git',
+		/*
 		'2) React New': 'https://github.com/WebArtWork/wawReact.git',
 		'3) Vue New': 'https://github.com/WebArtWork/wawVue.git',
 		'4) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
@@ -40,6 +42,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		'13) Angular Profile': 'https://github.com/WebArtWork/wawNgxProfile.git',
 		'13) React Profile': 'https://github.com/WebArtWork/wawReactProfile.git',
 		'14) Vue Profile': 'https://github.com/WebArtWork/wawVueProfile.git'
+		*/
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
