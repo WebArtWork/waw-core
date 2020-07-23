@@ -91,6 +91,7 @@ module.exports = function(waw){
 		}
 		waw.files = function(opts){
 			waw.app.post("/api/"+opts.part+"/avatar", opts.ensure || waw.role('admin'), function(req, res) {
+				if(!waw.mongoose) return res.send(false);
 				opts.schema.findOne(opts.query || {
 					_id: req.body._id
 				}, function(err, doc) {
@@ -106,7 +107,7 @@ module.exports = function(waw){
 				});
 			});
 			waw.app.post("/api/"+opts.part+"/avatars", opts.ensure || waw.role('admin'), function(req, res) {
-				let custom = waw._mongoose.Types.ObjectId();
+				let custom = waw.mongoose.Types.ObjectId();
 				let url = '/api/'+opts.part+'/avatar/' + custom + '.jpg?' + Date.now();
 				waw.parallel([function(done) {
 					opts.schema.update(opts.query || { _id: req.body._id }, { $push: { thumbs: url } }, done);
@@ -122,9 +123,10 @@ module.exports = function(waw){
 		}
 		waw.ensure_file = function(opts, extra){
 			return function(req, res, next){
+				if(!waw.mongoose) return res.send(false);
 				waw.parallel([function(done) {
 					if(req.body.thumb){
-						if(!req.body._id) req.body._id = mongoose.Types.ObjectId();
+						if(!req.body._id) req.body._id = waw.mongoose.Types.ObjectId();
 						let dataUrl = req.body.thumb;
 						req.body.thumb = '/api/'+opts.part+'/avatar/' + req.body._id + '.jpg?' + Date.now();
 						waw.dataUrlToLocation(dataUrl, opts.dirname, req.body._id + '.jpg', done);
@@ -132,7 +134,7 @@ module.exports = function(waw){
 				}, function(done) {
 					if(req.body.thumbs){
 						waw.each(req.body.thumbs, (thumb, cb, i)=>{
-							let _id = mongoose.Types.ObjectId();
+							let _id = waw.mongoose.Types.ObjectId();
 							let dataUrl = req.body.thumbs[i];
 							req.body.thumbs[i] = '/api/'+opts.part+'/avatar/' + _id + '.jpg?' + Date.now();
 							waw.dataUrlToLocation(dataUrl, opts.dirname, _id + '.jpg', cb);
