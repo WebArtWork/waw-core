@@ -25,23 +25,19 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Create new project
 */
 	const list = {
-		'1) Angular': 'https://github.com/WebArtWork/wawNgx.git',
-		'2) Template': 'https://github.com/WebArtWork/wawTemplate.git',
-		/*
-		'2) React New': 'https://github.com/WebArtWork/wawReact.git',
-		'3) Vue New': 'https://github.com/WebArtWork/wawVue.git',
-		'4) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
-		'5) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
-		'6) Vue CRM': 'https://github.com/WebArtWork/wawVueCrm.git',
-		'7) Angular eCommerce': 'https://github.com/WebArtWork/wawNgxeCommerce.git',
-		'8) React eCommerce': 'https://github.com/WebArtWork/wawReacteCommerce.git',
-		'9) Vue eCommerce': 'https://github.com/WebArtWork/wawVueeCommerce.git',
-		'10) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
-		'11) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
-		'12) Vue Social Network': 'https://github.com/WebArtWork/wawVueSocial.git',
-		'13) Angular Profile': 'https://github.com/WebArtWork/wawNgxProfile.git',
-		'13) React Profile': 'https://github.com/WebArtWork/wawReactProfile.git',
-		'14) Vue Profile': 'https://github.com/WebArtWork/wawVueProfile.git'
+		'1) Template': 'https://github.com/WebArtWork/wawTemplate.git',
+		'2) Angular': 'https://github.com/WebArtWork/wawNgx.git',
+		/* Parts total [ user ecommerce post]
+		'3) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
+		'4) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
+
+		'5) React': 'https://github.com/WebArtWork/wawReact.git',
+		'6) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
+		'7) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
+		
+		'8) Vue': 'https://github.com/WebArtWork/wawVue.git',
+		'9) Vue CRM': 'https://github.com/WebArtWork/wawVueCrm.git',
+		'10) Vue Social Network': 'https://github.com/WebArtWork/wawVueSocial.git'
 		*/
 	};
 	const new_project = function(params) {
