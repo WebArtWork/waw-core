@@ -27,11 +27,14 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	const list = {
 		'1) Template': 'https://github.com/WebArtWork/wawTemplate.git',
 		'2) Angular': 'https://github.com/WebArtWork/wawNgx.git',
-		/* Parts total [ user ecommerce post]
+		'3) React': 'https://github.com/WebArtWork/wawReact.git',
+		/*
+			CRM Parts [ user ecommerce ]
+			Social Parts [ user post comment notification]
+
 		'3) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
 		'4) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
 
-		'5) React': 'https://github.com/WebArtWork/wawReact.git',
 		'6) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
 		'7) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
 		
