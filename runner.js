@@ -81,7 +81,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				return readline.question(text, function(answer){
 					if(!answer||!repos[parseInt(answer)]) return new_project();
 					params.new_project.repo = repos[parseInt(answer)];
-					new_project(params);					
+					new_project(params);
 				});
 			}
 		}
@@ -96,6 +96,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 						branch = params.argv[2];
 					}
 					repo.reset('origin/'+branch, err=>{
+						fs.rmdirSync(folder+'/.git', { recursive: true });
 						console.log('Your project has been generated successfully');
 						process.exit(1);
 					});
@@ -117,16 +118,16 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		if(!params.new_part.name){
 			if(params.argv.length){
 				if (fs.existsSync(process.cwd()+'/server/'+params.argv[0].toLowerCase())) {
-					console.log('This part already exists in current project');
+					console.log('This module already exists in current project');
 					process.exit(0);
 				}else{
 					params.new_part.name = params.argv[0];
 				}
 			}else{
-				return readline.question('Provide name for the part you want to create: ', function(answer){
+				return readline.question('Provide name for the module you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer.toLowerCase())) {
-							console.log('This part already exists in current project');
+							console.log('This module already exists in current project');
 						}else{
 							params.new_part.name = answer;
 						}
@@ -149,7 +150,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 							branch = params.argv[2];
 						}
 						repo.reset('origin/'+branch, err=>{
-							console.log('Part has been created');
+							console.log('Module has been created');
 							process.exit(1);
 						});
 					});
@@ -162,7 +163,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			data = data.split('CNAME').join(params.new_part.name.toString().charAt(0).toUpperCase() + params.new_part.name.toString().substr(1).toLowerCase());
 			data = data.split('NAME').join(params.new_part.name.toLowerCase());
 			fs.writeFileSync(folder+'/part.json', data, 'utf8');
-			console.log('Part has been created');
+			console.log('Module has been created');
 			process.exit(1);
 		}
 	};
@@ -188,7 +189,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			}
 		}
 		if(params.parts.length){
-			logs += '\nAccesible Parts: ';
+			logs += '\nAccesible Modules: ';
 			for (var i = 0; i < params.parts.length; i++) {
 				if(i){
 					logs += ', '+params.parts[i];
@@ -210,17 +211,17 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 */
 	const generate = function(params){
 		if(!params.argv.length){
-			console.log('Please provide part name');
+			console.log('Please provide module name');
 			process.exit(1);
 		}
 		let name = params.argv.shift();
 		if(params._parts[name.toLowerCase()]){
-			console.log('This part already exists.');
+			console.log('This module already exists.');
 			process.exit(1);
 		}
 		const global_part = params.origin_argv[1].toLowerCase() == 'global' || params.origin_argv[1].toLowerCase() == 'pg';
 		if(global_part && !params.argv.length){
-			console.log('To install global part you has to provide repo link.');
+			console.log('To install global module you has to provide repo link.');
 			process.exit(1);
 		}
 		let repo_link;
@@ -239,7 +240,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 							branch = params.argv.shift();
 						}
 						repo.reset('origin/'+branch, err=>{
-							console.log('Part has been created');
+							console.log('Module has been created');
 							process.exit(1);
 						});
 					});
@@ -265,7 +266,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 					counter++;
 					git_fetch(params.git, parts[i], config.git.repo, config.git.branch||'master', ()=>{
 						if(--counter === 0){
-							console.log('All global parts has been updated');
+							console.log('All global modules has been updated');
 							process.exit(1);
 						}
 					});
@@ -273,7 +274,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			}
 		}
 		if(!counter){
-			console.log('All global parts has been updated');
+			console.log('All global modules has been updated');
 			process.exit(1);
 		}
 	}
@@ -287,16 +288,16 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 			return generate(params);
 		}
 		if(!params.argv.length){
-			console.log('Please provide part name');
+			console.log('Please provide module name');
 			process.exit(1);
 		}
 		let part = params.argv.shift();
 		if(!params._parts[part]){
-			console.log("There is no such part");
+			console.log("There is no such module");
 			process.exit(1);
 		}
 		if(!params._parts[part].git || !params._parts[part].git.repo){
-			console.log("Part don't have git config");
+			console.log("Module don't have git config");
 			process.exit(1);
 		}
 		switch(command){
@@ -308,7 +309,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 					repo.addRemote('origin', params._parts[part].git.repo, function(err){
 						repo.fetch('--all', function(err){
 							repo.reset('origin/'+(params._parts[part].git.branch||'master'), ()=>{
-								console.log('Part has been fetched');
+								console.log('Module has been fetched');
 								process.exit(1);
 							});
 						});
@@ -316,14 +317,15 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				});
 				return false;
 			default:
-				console.log('Please provide correct git command. Type `waw part help`');
+				console.log('Please provide correct git command. Type `waw module help`');
 				process.exit(1);
 		}
 	}
 	module.exports.part = part;
-	module.exports.pr = parts_renew;
-	module.exports.pn = generate;
-	module.exports.pg = generate;
+	module.exports.u = parts_renew;
+	module.exports.update = parts_renew;
+	module.exports.add = generate;
+	module.exports.a = generate;
 /*
 *	PM2 management
 */
