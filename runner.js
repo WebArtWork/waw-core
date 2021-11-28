@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
+	input: process.stdin,
+	output: process.stdout
 });
 
 const isDirectory = source => fs.lstatSync(source).isDirectory();
@@ -25,23 +25,9 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Create new project
 */
 	const list = {
-		'1) Template': 'https://github.com/WebArtWork/wawTemplate.git',
-		'2) Angular': 'https://github.com/WebArtWork/wawNgx.git',
-		'3) React': 'https://github.com/WebArtWork/wawReact.git',
-		/*
-			CRM Parts [ user ecommerce ]
-			Social Parts [ user post comment notification]
-
-		'3) Angular CRM': 'https://github.com/WebArtWork/wawNgxCrm.git',
-		'4) Angular Social Network': 'https://github.com/WebArtWork/wawNgxSocial.git',
-
-		'6) React CRM': 'https://github.com/WebArtWork/wawReactCrm.git',
-		'7) React Social Network': 'https://github.com/WebArtWork/wawReactSocial.git',
-		
-		'8) Vue': 'https://github.com/WebArtWork/wawVue.git',
-		'9) Vue CRM': 'https://github.com/WebArtWork/wawVueCrm.git',
-		'10) Vue Social Network': 'https://github.com/WebArtWork/wawVueSocial.git'
-		*/
+		'1) Angular': 'https://github.com/WebArtWork/ngx.git',
+		'2) Template': 'https://github.com/WebArtWork/wawTemplate.git',
+		'3) waw Angular with Template': 'https://github.com/WebArtWork/wawNgx.git',
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
