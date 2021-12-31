@@ -27,7 +27,8 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 	const list = {
 		'1) Angular': 'https://github.com/WebArtWork/ngx.git',
 		'2) Template': 'https://github.com/WebArtWork/wawTemplate.git',
-		'3) waw Angular with Template': 'https://github.com/WebArtWork/wawNgx.git',
+		'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
+		'4) waw Server with Angular and Template': 'https://github.com/WebArtWork/wawNgx.git',
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
