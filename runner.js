@@ -7,7 +7,7 @@ const readline = require('readline').createInterface({
 const isDirectory = source => fs.lstatSync(source).isDirectory();
 const getDirectories = source => {
 	if (!fs.existsSync(source)) {
-		return []; 
+		return [];
 	}
 	return fs.readdirSync(source).map(name => require('path').join(source, name)).filter(isDirectory);
 }
@@ -25,10 +25,10 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 *	Create new project
 */
 	const list = {
-		'1) Angular': 'https://github.com/WebArtWork/ngx.git',
-		'2) Template': 'https://github.com/WebArtWork/wawTemplate.git',
+		'1) waw Angular': 'https://github.com/WebArtWork/wawNgx.git',
+		'2) waw Template': 'https://github.com/WebArtWork/wawTemplate.git',
 		'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
-		'4) waw Server with Angular and Template': 'https://github.com/WebArtWork/wawNgx.git',
+		'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
 	};
 	const new_project = function(params) {
 		if(!params.new_project) params.new_project={};
@@ -57,7 +57,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		}
 		if(!params.new_project.repo){
 			if(params.argv.length>1){
-				params.new_project.repo = params.argv[1];				
+				params.new_project.repo = params.argv[1];
 			}else{
 				let text = 'Which project you want to start with?', counter=0, repos={};
 				for(let key in list){
@@ -309,8 +309,7 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 		}
 	}
 	module.exports.part = part;
-	module.exports.u = parts_renew;
-	module.exports.update = parts_renew;
+	module.exports.renew = parts_renew;
 	module.exports.add = generate;
 	module.exports.a = generate;
 /*
