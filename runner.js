@@ -175,13 +175,13 @@ const git_fetch = function(git, location, repo, branch='master', cb = ()=>{}){
 				process.exit(1);
 			}
 		}
-		if(params.parts.length){
+		if(params.modules.length){
 			logs += '\nAccesible Modules: ';
-			for (var i = 0; i < params.parts.length; i++) {
+			for (var i = 0; i < params.modules.length; i++) {
 				if(i){
-					logs += ', '+params.parts[i];
+					logs += ', '+params.modules[i].name;
 				}else{
-					logs += params.parts[i];
+					logs += params.modules[i].name;
 				}
 			}
 
