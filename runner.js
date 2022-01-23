@@ -56,22 +56,11 @@ const readline = require('readline').createInterface({
 		}
 		let folder = process.cwd()+'/'+waw.new_project.name;
 		fs.mkdirSync(folder, { recursive: true });
-		let repo = waw.git(folder);
-		repo.init(function(){
-			repo.addRemote('origin', waw.new_project.repo, function(err){
-				repo.fetch('--all', function(err){
-					let branch = 'master';
-					if(waw.argv.length>2){
-						branch = waw.argv[2];
-					}
-					repo.reset('origin/'+branch, err=>{
-						fs.rmdirSync(folder+'/.git', { recursive: true });
-						console.log('Your project has been generated successfully');
-						process.exit(1);
-					});
-				});
-			});
-		});
+		waw.fetch(folder, waw.new_project.repo, () => {
+			fs.rmdirSync(folder + '/.git', { recursive: true });
+			console.log('Your project has been generated successfully');
+			process.exit(1);
+		}, waw.argv.length > 2 ? waw.argv[2] : 'master');
 	};
 	module.exports.new = new_project;
 	module.exports.n = new_project;
