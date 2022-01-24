@@ -166,16 +166,11 @@ const readline = require('readline').createInterface({
 			console.log('This module already exists.');
 			process.exit(1);
 		}
-		const global_module = waw.origin_argv[1].toLowerCase() == 'global' || waw.origin_argv[1].toLowerCase() == 'pg';
-		if(global_module && !waw.argv.length){
-			console.log('To install global module you has to provide repo link.');
-			process.exit(1);
-		}
 		let repo_link;
 		if(waw.argv.length){
 			repo_link = waw.argv.shift();
 		}
-		let folder = (global_module&&waw.waw_root||process.cwd())+'/server/'+name;
+		let folder = process.cwd()+'/server/'+name;
 		fs.mkdirSync(folder, { recursive: true });
 		if(repo_link){
 			let repo = waw.git(folder);
