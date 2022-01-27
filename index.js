@@ -97,14 +97,16 @@ module.exports = function(waw){
 					}, res => {
 						res.on('data', callback);
 					});
-					req.on('error', error => { });
+					req.on('error', error => {});
 					req.write(data);
 					req.end();
 				}
 			}
 			return {
 				get: function(path, callback){
-					const req = https.request({ hostname, port, path, method: 'GET' }, res => {
+					const req = https.request({
+						hostname, port, path, method: 'GET'
+					}, res => {
 						res.on('data', callback);
 					});
 					req.on('error', error => {});
