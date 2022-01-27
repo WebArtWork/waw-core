@@ -3,6 +3,10 @@ const readline = require('readline').createInterface({
 	input: process.stdin,
 	output: process.stdout
 });
+module.exports.love = function (waw) {
+	console.log('waw Loves you :) ');
+	process.exit(1);
+};
 /*
 *	Create new project
 */

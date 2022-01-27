@@ -20,10 +20,6 @@ Core [waw](https://webart.work) commands which will be useful for any kinds of p
 `waw.exe`
 ### Http Client
 `waw.http`
-### Listener for emit event
-`waw.on`
-### Emitter for waw.on listener
-`waw.emit`
 ## Contributing
 Thanks for your interest in contributing! Read up our guidelines for
 [contributing](https://github.com/WebArtWork/core/CONTRIBUTING.md)
