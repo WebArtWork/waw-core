@@ -113,7 +113,7 @@ module.exports.love = function (waw) {
 			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
 			data = data.split('CNAME').join(waw.new_module.name.toString().charAt(0).toUpperCase() + waw.new_module.name.toString().substr(1).toLowerCase());
 			data = data.split('NAME').join(waw.new_module.name.toLowerCase());
-			fs.writeFileSync(folder+'/part.json', data, 'utf8');
+			fs.writeFileSync(folder+'/module.json', data, 'utf8');
 			console.log('Module has been created');
 			process.exit(1);
 		}
@@ -197,8 +197,8 @@ module.exports.love = function (waw) {
 			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
 			data = data.split('CNAME').join(name.toString().charAt(0).toUpperCase() + name.toString().substr(1).toLowerCase());
 			data = data.split('NAME').join(name.toLowerCase());
-			fs.writeFileSync(folder+'/part.json', data, 'utf8');
-			console.log('Part has been created');
+			fs.writeFileSync(folder+'/module.json', data, 'utf8');
+			console.log('Module has been created');
 			process.exit(1);
 		}
 	}
