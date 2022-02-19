@@ -1,8 +1,15 @@
 const fs = require('fs');
-const readline = require('readline').createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
+const defaults = {
+	module: {
+		default: __dirname + '/module/default'
+	}
+}
+const list = {
+	'1) waw Angular': 'https://github.com/WebArtWork/wawNgx.git',
+	'2) waw Template': 'https://github.com/WebArtWork/wawTemplate.git',
+	'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
+	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
+};
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
 	process.exit(1);
@@ -10,12 +17,6 @@ module.exports.love = function (waw) {
 /*
 *	Create new project
 */
-	const list = {
-		'1) waw Angular': 'https://github.com/WebArtWork/wawNgx.git',
-		'2) waw Template': 'https://github.com/WebArtWork/wawTemplate.git',
-		'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
-		'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
-	};
 	const new_project = function(waw) {
 		if(!waw.new_project) waw.new_project={};
 		if(!waw.new_project.name){
@@ -27,7 +28,7 @@ module.exports.love = function (waw) {
 					waw.new_project.name = waw.argv[0];
 				}
 			}else{
-				return readline.question('Provide name for the project you want to create: ', function(answer){
+				return waw.readline.question('Provide name for the project you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer)) {
 							console.log('This project already exists in current directory');
@@ -51,7 +52,7 @@ module.exports.love = function (waw) {
 					text += '\n'+key;
 				}
 				text += '\nChoose number: ';
-				return readline.question(text, function(answer){
+				return waw.readline.question(text, function(answer){
 					if(!answer||!repos[parseInt(answer)]) return new_project();
 					waw.new_project.repo = repos[parseInt(answer)];
 					new_project(waw);
@@ -68,58 +69,6 @@ module.exports.love = function (waw) {
 	};
 	module.exports.new = new_project;
 	module.exports.n = new_project;
-/*
-*	Create new module
-*/
-	const new_module = function(waw) {
-		if (!fs.existsSync(process.cwd()+'/config.json')) {
-			console.log('You are located not in waw project');
-			process.exit(0);
-		}
-		if(!waw.new_module) waw.new_module={};
-		if(!waw.new_module.name){
-			if(waw.argv.length){
-				if (fs.existsSync(process.cwd()+'/server/'+waw.argv[0].toLowerCase())) {
-					console.log('This module already exists in current project');
-					process.exit(0);
-				}else{
-					waw.new_module.name = waw.argv[0];
-				}
-			}else{
-				return readline.question('Provide name for the module you want to create: ', function(answer){
-					if(answer){
-						if (fs.existsSync(process.cwd()+'/'+answer.toLowerCase())) {
-							console.log('This module already exists in current project');
-						}else{
-							waw.new_module.name = answer;
-						}
-					}else{
-						console.log('Please type your project name');
-					}
-					new_module(waw);
-				});
-			}
-		}
-		let folder = process.cwd()+'/server/'+waw.new_project.name;
-		if(waw.argv.length > 1){
-			fs.mkdirSync(folder, { recursive: true });
-			waw.fetch(folder, waw.argv[1], () => {
-				console.log('Module has been created');
-				process.exit(1);
-			}, waw.argv.length > 2 ? waw.argv[2] : 'master');
-		}else{
-			fs.mkdirSync(folder, { recursive: true });
-			fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
-			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
-			data = data.split('CNAME').join(waw.new_module.name.toString().charAt(0).toUpperCase() + waw.new_module.name.toString().substr(1).toLowerCase());
-			data = data.split('NAME').join(waw.new_module.name.toLowerCase());
-			fs.writeFileSync(folder+'/module.json', data, 'utf8');
-			console.log('Module has been created');
-			process.exit(1);
-		}
-	};
-	module.exports.add = new_module;
-	module.exports.a = new_module;
 /*
 *	Version Management
 */
@@ -157,71 +106,22 @@ module.exports.love = function (waw) {
 	module.exports['-v'] = version;
 	module.exports.version = version;
 	module.exports.v = version;
+
 /*
-*	Git Management
+*	Modules Management
 */
-	const generate = function(waw){
-		if(!waw.argv.length){
-			console.log('Please provide module name');
-			process.exit(1);
+	const new_module = function (waw) {
+		waw.server = typeof waw.server === 'string' ? waw.server : 'server';
+		if (!waw.path) {
+			if (waw.ensure(process.cwd() + (waw.server ? '/' : ''), waw.server, 'Module already exists', false)) return;
 		}
-		let name = waw.argv.shift();
-		if(waw._modules[name.toLowerCase()]){
-			console.log('This module already exists.');
-			process.exit(1);
+		if (!waw.template) {
+			return waw.read_customization(defaults, 'module', () => new_module(waw));
 		}
-		let repo_link;
-		if(waw.argv.length){
-			repo_link = waw.argv.shift();
-		}
-		let folder = process.cwd()+'/server/'+name;
-		fs.mkdirSync(folder, { recursive: true });
-		if(repo_link){
-			let repo = waw.git(folder);
-			repo.init(function(){
-				repo.addRemote('origin', repo_link, function(err){
-					repo.fetch('--all', function(err){
-						let branch = 'master';
-						if(waw.argv.length){
-							branch = waw.argv.shift();
-						}
-						repo.reset('origin/'+branch, err=>{
-							console.log('Module has been created');
-							process.exit(1);
-						});
-					});
-				});
-			});
-		}else{
-			fs.writeFileSync(folder+'/index.js', `module.exports = function(waw) {\n\t// add your router code\n};`, 'utf8');
-			let data = `{\n\t"name": "CNAME",\n\t"router": "index.js",\n\t"dependencies": {}\n}`;
-			data = data.split('CNAME').join(name.toString().charAt(0).toUpperCase() + name.toString().substr(1).toLowerCase());
-			data = data.split('NAME').join(name.toLowerCase());
-			fs.writeFileSync(folder+'/module.json', data, 'utf8');
-			console.log('Module has been created');
-			process.exit(1);
-		}
+		require(waw.template + '/cli.js')(waw);
 	}
-	const modules_renew = function(waw){
-		let counter = 0;
-		for (var i = 0; i < waw.modules.length; i++) {
-			if(!waw.modules[i].git || !waw.modules[i].git.repo) continue;
-			counter++;
-			waw.fetch(waw.modules[i], waw.modules[i].git.repo, ()=>{
-				if (--counter === 0) {
-					console.log('All global modules has been updated');
-					process.exit(1);
-				}
-			}, waw.modules[i].git.branch || 'master');
-		}
-		if(!counter){
-			console.log('All global modules has been updated');
-			process.exit(1);
-		}
-	}
-	module.exports.renew = modules_renew;
-	module.exports.add = generate;
-	module.exports.a = generate;
+	module.exports.add = new_module;
+	module.exports.a = new_module;
 /*
 *	PM2 management
 */
