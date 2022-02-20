@@ -18,8 +18,12 @@ module.exports.love = function (waw) {
 *	Create new project
 */
 	const new_project = function(waw) {
-		waw.argv.shift();
-		if (!waw.new_project) waw.new_project = {};
+		if (waw.argv[0] === 'new') {
+			waw.argv.shift();
+		}
+		if (!waw.new_project) {
+			waw.new_project = {};
+		}
 		if (!waw.new_project.name) {
 			if (waw.argv.length) {
 				if (fs.existsSync(process.cwd()+'/'+waw.argv[0])) {
