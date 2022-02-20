@@ -42,9 +42,9 @@ module.exports.love = function (waw) {
 				});
 			}
 		}
-		if(!waw.new_project.repo){
-			if(waw.argv.length>1){
-				waw.new_project.repo = waw.argv[1];
+		if (!waw.new_project.repo) {
+			if(waw.argv.length>2){
+				waw.new_project.repo = waw.argv[2];
 			}else{
 				let text = 'Which project you want to start with?', counter=0, repos={};
 				for(let key in list){
