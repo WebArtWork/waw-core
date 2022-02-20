@@ -18,16 +18,16 @@ module.exports.love = function (waw) {
 *	Create new project
 */
 	const new_project = function(waw) {
-		if(!waw.new_project) waw.new_project={};
-		if(!waw.new_project.name){
-			if(waw.argv.length){
-				if (fs.existsSync(process.cwd()+'/'+waw.argv[0])) {
+		if (!waw.new_project) waw.new_project = {};
+		if (!waw.new_project.name) {
+			if (waw.argv.length) {
+				if (fs.existsSync(process.cwd()+'/'+waw.argv[1])) {
 					console.log('This project already exists in current directory');
 					process.exit(0);
 				}else{
-					waw.new_project.name = waw.argv[0];
+					waw.new_project.name = waw.argv[1];
 				}
-			}else{
+			} else {
 				return waw.readline.question('Provide name for the project you want to create: ', function(answer){
 					if(answer){
 						if (fs.existsSync(process.cwd()+'/'+answer)) {
