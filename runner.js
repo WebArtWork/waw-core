@@ -18,14 +18,15 @@ module.exports.love = function (waw) {
 *	Create new project
 */
 	const new_project = function(waw) {
+		waw.argv.shift();
 		if (!waw.new_project) waw.new_project = {};
 		if (!waw.new_project.name) {
 			if (waw.argv.length) {
-				if (fs.existsSync(process.cwd()+'/'+waw.argv[1])) {
+				if (fs.existsSync(process.cwd()+'/'+waw.argv[0])) {
 					console.log('This project already exists in current directory');
 					process.exit(0);
 				}else{
-					waw.new_project.name = waw.argv[1];
+					waw.new_project.name = waw.argv[0];
 				}
 			} else {
 				return waw.readline.question('Provide name for the project you want to create: ', function(answer){
@@ -43,8 +44,8 @@ module.exports.love = function (waw) {
 			}
 		}
 		if (!waw.new_project.repo) {
-			if(waw.argv.length>2){
-				waw.new_project.repo = waw.argv[2];
+			if(waw.argv.length>1){
+				waw.new_project.repo = waw.argv[1];
 			}else{
 				let text = 'Which project you want to start with?', counter=0, repos={};
 				for(let key in list){
