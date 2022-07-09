@@ -68,7 +68,9 @@ module.exports.love = function (waw) {
 		let folder = process.cwd()+'/'+waw.new_project.name;
 		fs.mkdirSync(folder, { recursive: true });
 		waw.fetch(folder, waw.new_project.repo, () => {
-			fs.rmdirSync(folder + '/.git', { recursive: true });
+			if (fs.existsSync(folder + '/.git')) {
+				fs.rmdirSync(folder + '/.git', { recursive: true });
+			}
 			console.log('Your project has been generated successfully');
 			process.exit(1);
 		}, waw.argv.length > 2 ? waw.argv[2] : 'master');
