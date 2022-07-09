@@ -1,6 +1,6 @@
 {
 	"name": "Core",
-	"priority": 1000,
+	"priority": 10,
 	"runner": "runner.js",
 	"router": "index.js",
 	"git": {
