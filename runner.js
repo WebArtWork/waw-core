@@ -70,7 +70,7 @@ module.exports.love = function (waw) {
 		fs.mkdirSync(folder, { recursive: true });
 		waw.fetch(folder, waw.new_project.repo, () => {
 			if (fs.existsSync(folder + '/.git')) {
-				fs.rmdirSync(folder + '/.git', { recursive: true });
+				fs.rmSync(folder + '/.git', { recursive: true });
 			}
 			console.log('Your project has been generated successfully');
 			process.exit(1);
