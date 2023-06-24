@@ -10,7 +10,8 @@ const list = {
 	'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
 	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
 	'5) waw Server + React Next': 'https://github.com/WebArtWork/wawReactPlatform.git',
-	'6) waw Server + Vue Nuxt': 'https://github.com/WebArtWork/wawVuePlatform.git'
+	'6) waw Server + Vue Nuxt': 'https://github.com/WebArtWork/wawVuePlatform.git',
+	'7) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git'
 };
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
