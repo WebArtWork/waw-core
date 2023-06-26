@@ -2,7 +2,7 @@ const { exec } = require('child_process');
 const https = require('https');
 const fs = require('fs');
 const { Server } = require('http');
-module.exports = function(waw){
+module.exports = async function(waw){
 	/* General use */
 		waw.exe = function(command, cb=()=>{}){
 			if(!command) return cb();
@@ -10,6 +10,9 @@ module.exports = function(waw){
 				cb({err, stdout, stderr});
 			});
 		}
+		waw.wait = async (time) => {
+			return await new Promise((resolve) => setTimeout(resolve, time));
+		};
 	/* Cache Management */
 		const data = {};
 		const bags = {};
