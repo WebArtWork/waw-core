@@ -9,9 +9,8 @@ const list = {
 	'2) waw Template': 'https://github.com/WebArtWork/wawTemplate.git',
 	'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
 	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
-	'5) waw Server + React Next': 'https://github.com/WebArtWork/wawReactPlatform.git',
-	'6) waw Server + Vue Nuxt': 'https://github.com/WebArtWork/wawVuePlatform.git',
-	'7) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git'
+	'5) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git',
+	'6) Wawify Template': 'https://github.com/WebArtWork/Wawify.git'
 };
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
@@ -51,20 +50,31 @@ module.exports.love = function (waw) {
 			}
 		}
 		if (!waw.new_project.repo) {
-			if(waw.argv.length>1){
+			if (
+				waw.argv.length > 1 &&
+				waw.argv[1] != Number(waw.argv[1])
+			) {
 				waw.new_project.repo = waw.argv[1];
-			}else{
+			} else {
 				let text = 'Which project you want to start with?', counter=0, repos={};
 				for(let key in list){
 					repos[++counter] = list[key];
 					text += '\n'+key;
 				}
-				text += '\nChoose number: ';
-				return waw.readline.question(text, function(answer){
-					if(!answer||!repos[parseInt(answer)]) return new_project();
-					waw.new_project.repo = repos[parseInt(answer)];
-					new_project(waw);
-				});
+				if (
+					waw.argv.length > 1 &&
+					waw.argv[1] == Number(waw.argv[1]) &&
+					Object.keys(repos).length >= Number(waw.argv[1])
+				) {
+					waw.new_project.repo = repos[parseInt(waw.argv[1])];
+				} else {
+					text += '\nChoose number: ';
+					return waw.readline.question(text, function(answer){
+						if(!answer||!repos[parseInt(answer)]) return new_project();
+						waw.new_project.repo = repos[parseInt(answer)];
+						new_project(waw);
+					});
+				}
 			}
 		}
 		let folder = process.cwd()+'/'+waw.new_project.name;
