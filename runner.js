@@ -1,10 +1,12 @@
 const fs = require('fs');
+const path = require('path');
 const defaults = {
 	module: {
 		default: __dirname + '/module/default'
 	}
 }
-const list = {
+
+const repo_list = {
 	'1) waw Angular': 'https://github.com/WebArtWork/ngx-default.git',
 	'2) waw Template': 'https://github.com/WebArtWork/wjst-default.git',
 	'3) waw Server': 'https://github.com/WebArtWork/waw-default.git',
@@ -12,6 +14,25 @@ const list = {
 	'5) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git',
 	'6) Wawify Template': 'https://github.com/WebArtWork/Wawify.git'
 };
+
+const css_ngx_list = {
+	'1) Basic': 'https://github.com/WebArtWork/ngx-css.git',
+	'2) Bootstrap': 'https://github.com/WebArtWork/ngx-cssBootstrap.git',
+	'3) Tailwind': 'https://github.com/WebArtWork/ngx-cssTailwind.git',
+	'4) Foundation': 'https://github.com/WebArtWork/ngx-cssFoundation.git',
+	'5) Bulma': 'https://github.com/WebArtWork/ngx-cssBulma.git',
+	'6) Skeleton': 'https://github.com/WebArtWork/ngx-cssSkeleton.git'
+};
+
+const css_wjst_list = {
+	'1) Basic': 'https://github.com/WebArtWork/wjst-css.git',
+	'2) Bootstrap': 'https://github.com/WebArtWork/wjst-cssBootstrap.git',
+	'3) Tailwind': 'https://github.com/WebArtWork/wjst-cssTailwind.git',
+	'4) Foundation': 'https://github.com/WebArtWork/wjst-cssFoundation.git',
+	'5) Bulma': 'https://github.com/WebArtWork/wjst-cssBulma.git',
+	'6) Skeleton': 'https://github.com/WebArtWork/wjst-cssSkeleton.git'
+};
+
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
 	process.exit(1);
@@ -57,8 +78,8 @@ module.exports.love = function (waw) {
 				waw.new_project.repo = waw.argv[1];
 			} else {
 				let text = 'Which project you want to start with?', counter=0, repos={};
-				for(let key in list){
-					repos[++counter] = list[key];
+				for(let key in repo_list){
+					repos[++counter] = repo_list[key];
 					text += '\n'+key;
 				}
 				if (
@@ -70,7 +91,7 @@ module.exports.love = function (waw) {
 				} else {
 					text += '\nChoose number: ';
 					return waw.readline.question(text, function(answer){
-						if(!answer||!repos[parseInt(answer)]) return new_project();
+						if(!answer||!repos[parseInt(answer)]) return new_project(waw);
 						waw.new_project.repo = repos[parseInt(answer)];
 						new_project(waw);
 					});
@@ -89,6 +110,67 @@ module.exports.love = function (waw) {
 	};
 	module.exports.new = new_project;
 	module.exports.n = new_project;
+
+/*
+*	Create new project
+*/
+	const change_css = function(waw) {
+		const isAngular = fs.existsSync(
+			path.join(
+				process.cwd(),
+				'angular.json'
+			)
+		);
+
+		if (
+			!isAngular &&
+			!fs.existsSync(
+				path.join(
+					process.cwd(),
+					'template.json'
+				)
+			)
+		) {
+			console.log('This is not an project with waw css');
+			process.exit();
+		}
+
+		if (!waw.change_css) {
+			waw.change_css = {};
+		}
+
+		if (!waw.change_css.repo) {
+			const list = isAngular ? css_ngx_list : css_wjst_list;
+			let text = 'Which framework you want to use?', counter = 0, repos = {};
+			for (let key in list) {
+				repos[++counter] = list[key];
+				text += '\n' + key;
+			}
+			text += '\nChoose number: ';
+			return waw.readline.question(text, function (answer) {
+				if (!answer || !repos[parseInt(answer)]) return change_css(waw);
+				waw.change_css.repo = repos[parseInt(answer)];
+				change_css(waw);
+			});
+		}
+
+		const folder = path.join(
+			process.cwd(),
+			isAngular ? 'src' : 'css',
+			'scss'
+		);
+
+		fs.rmSync(folder, { recursive: true });
+		fs.mkdirSync(folder, { recursive: true });
+		waw.fetch(folder, waw.change_css.repo, () => {
+			if (fs.existsSync(folder + '/.git')) {
+				fs.rmSync(folder + '/.git', { recursive: true });
+			}
+			console.log('css Framework changed successfully');
+			process.exit(1);
+		}, waw.argv.length > 1 ? waw.argv[1] : 'master');
+	};
+	module.exports.css = change_css;
 /*
 *	Version Management
 */
