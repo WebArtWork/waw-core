@@ -5,10 +5,10 @@ const defaults = {
 	}
 }
 const list = {
-	'1) waw Angular': 'https://github.com/WebArtWork/wawNgx.git',
-	'2) waw Template': 'https://github.com/WebArtWork/wawTemplate.git',
-	'3) waw Server': 'https://github.com/WebArtWork/wawServer.git',
-	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/wawNgxPlatform.git',
+	'1) waw Angular': 'https://github.com/WebArtWork/ngx-default.git',
+	'2) waw Template': 'https://github.com/WebArtWork/wjst-default.git',
+	'3) waw Server': 'https://github.com/WebArtWork/waw-default.git',
+	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/ngx-platform.git',
 	'5) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git',
 	'6) Wawify Template': 'https://github.com/WebArtWork/Wawify.git'
 };
