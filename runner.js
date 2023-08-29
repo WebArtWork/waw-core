@@ -225,6 +225,100 @@ module.exports.love = function (waw) {
 	module.exports.add = new_module;
 	module.exports.a = new_module;
 /*
+*	Sync management
+*/
+
+const fetch_module = (waw, location, callback) => {
+	location = path.normalize(location);
+	if (!fs.existsSync(location + '/module.json')) {
+		return callback(false);
+	}
+	let json = waw.readJson(location + '/module.json');
+	if (!json.repo) {
+		return callback(false);
+	}
+	waw.fetch(location, json.repo, err => {
+		callback();
+		// waw.install(waw, location, callback);
+	});
+};
+
+const update_module = async (waw, module, callback) => {
+	const branch = waw.argv.length > 2 ? waw.argv[2] : 'master';
+
+	const location = module.__root;
+
+	const temp = path.join(location, 'temp');
+
+	waw.fetch(temp, module.config.repo, err => {
+		if (fs.existsSync(path.join(location, '.git'))) {
+			fs.rmSync(path.join(location, '.git'), { recursive: true });
+		}
+
+		if (!path.join(temp, '.git')) {
+			if (fs.existsSync(temp)) {
+				fs.rmSync(temp, { recursive: true });
+			}
+
+			return callback();
+		}
+
+		fs.renameSync(
+			path.join(temp, '.git'),
+			path.join(location, '.git')
+		);
+
+		fs.rmSync(temp, { recursive: true });
+
+		if (fs.existsSync(path.join(location, '.git'))) {
+			const command = 'cd ./src/app/modules/' + module.name + ' && ';
+
+			exe(command + 'git add --all .');
+
+			try {
+				exe(command + 'git commit -m "' + waw.argv[1] + '"');
+
+				exe(command + 'git push origin "' + branch + '"');
+			} catch (error) { }
+
+			fs.rmSync(path.join(location, '.git'), { recursive: true });
+		}
+
+		callback();
+	}, branch, false);
+}
+
+module.exports.sync = async waw => {
+	for (let i = waw.modules.length - 1; i >= 0; i--) {
+		waw.modules[i].config = waw.readJson(path.join(waw.modules[i].__root, 'module.json'))
+		if (!waw.modules[i].config.repo) {
+			waw.modules.splice(i, 1);
+		}
+	}
+
+	let countdown = waw.modules.length;
+
+	if (waw.argv.length === 1) {
+		for (const module of waw.modules) {
+			fetch_module(waw, module.__root, () => {
+				if (--countdown === 0) {
+					console.log('All modules were synchronized');
+					process.exit(1);
+				}
+			});
+		}
+	} else if (waw.argv.length > 1) {
+		for (const module of waw.modules) {
+			update_module(waw, module, () => {
+				if (--countdown === 0) {
+					console.log('All modules were updated and synchronized');
+					process.exit(1);
+				}
+			});
+		}
+	}
+};
+/*
 *	PM2 management
 */
 	let pm2;
