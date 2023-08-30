@@ -297,7 +297,12 @@ module.exports.sync = async waw => {
 	}
 
 	let countdown = waw.modules.length;
-
+	
+     if (!countdown) {
+	    console.log('There was no modules to synchronize');
+	    process.exit(1);
+}
+	
 	if (waw.argv.length === 1) {
 		for (const module of waw.modules) {
 			fetch_module(waw, module.__root, () => {
