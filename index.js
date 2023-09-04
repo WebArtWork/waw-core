@@ -41,30 +41,45 @@ module.exports = async function(waw){
 	/* Http Management */
 		waw.http = function(hostname, port = 443){
 			const post = function(method){
-				return function (path, body, callback) {
-					const data = new TextEncoder().encode(JSON.stringify(body));
-					const req = https.request({
-						hostname, port, path, method, headers: {
-							'Content-Type': 'application/json',
-							'Content-Length': data.length
+				return async function (path, body, callback) {
+					try {
+						const response = await fetch(
+							hostname + ':' + port + path,
+							{
+								method,
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(body)
+							}
+						);
+						if (!response.ok) {
+							callback(false);
+						} else {
+							callback(await response.json());
 						}
-					}, res => {
-						res.on('data', callback);
-					});
-					req.on('error', error => {});
-					req.write(data);
-					req.end();
+					} catch (error) {
+						callback(false);
+					}
 				}
 			}
 			return {
-				get: function(path, callback){
-					const req = https.request({
-						hostname, port, path, method: 'GET'
-					}, res => {
-						res.on('data', callback);
-					});
-					req.on('error', error => {});
-					req.end();
+				get: async function(path, callback){
+					try {
+						const response = await fetch(hostname + ':' + port + path);
+						if (!response.ok) {
+							callback(false);
+						} else {
+							const contentType = response.headers.get('content-type');
+							if (contentType && contentType.includes('application/json')) {
+								callback(await response.json());
+							} else {
+								callback(await response.text());
+							}
+						}
+					} catch (error) {
+						callback(false);
+					}
 				},
 				post: post('POST'),
 				put: post('PUT'),
