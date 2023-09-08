@@ -24,7 +24,7 @@ module.exports = async function(waw){
 				waw.clearCache(query);
 			}
 		}
-		waw.cache = async (query, exe, bag) => {
+	//	waw.cache = async (query, exe, bag) => {
 			if (!data[query]) {
 				data[query] = await exe();
 			}
@@ -37,7 +37,7 @@ module.exports = async function(waw){
 				}
 			}
 			return data[query];
-		}
+		// }
 	/* Http Management */
 		waw.http = function(hostname, port = 443){
 			const post = function(method){
