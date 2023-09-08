@@ -25,18 +25,18 @@ module.exports = async function(waw){
 			}
 		}
 	//	waw.cache = async (query, exe, bag) => {
-			if (!data[query]) {
-				data[query] = await exe();
-			}
-			if (bag) {
-				if (!bags[bag]) {
-					bags[bag] = [];
-				}
-				if (bags[bag].indexOf(query) === -1) {
-					bags[bag].push(query);
-				}
-			}
-			return data[query];
+		//	if (!data[query]) {
+		//		data[query] = await exe();
+		//	}
+		//	if (bag) {
+		//		if (!bags[bag]) {
+		//		bags[bag] = [];
+		//		}
+		//		if (bags[bag].indexOf(query) === -1) {
+		//			bags[bag].push(query);
+		//		}
+		//	}
+		//	return data[query];
 		// }
 	/* Http Management */
 		waw.http = function(hostname, port = 443){
