@@ -1,3 +1,4 @@
+import Dom from "/api/wjst/dom";
 class Alert {
 	show(message) {
 		const template = Dom.template('alert', { message });
