@@ -68,6 +68,17 @@ class Dom {
 		// Attach the click event listener
 		element.addEventListener('click', callback);
 	}
+
+		value(elementId) {
+		const element = document.getElementById(elementId);
+
+		if (element) {
+			return element.value;
+		} else {
+			console.error(`Element with ID '${elementId}' not found.`);
+			return '';
+		}
+	}
 }
 
 export default new Dom();
