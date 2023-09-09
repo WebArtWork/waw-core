@@ -79,6 +79,20 @@ class Dom {
 			return '';
 		}
 	}
+		enter(elementId, callback) {
+		const inputElement = document.getElementById(elementId);
+
+		if (!inputElement) {
+			console.error(`Element with ID '${elementId}' not found.`);
+			return;
+		}
+
+		inputElement.addEventListener('keypress', (event) => {
+			if (event.key === 'Enter') {
+				callback(event);
+			}
+		});
+	}
 }
 
 export default new Dom();
