@@ -4,5 +4,7 @@
 	"priority": 910,
 	"runner": "runner.js",
 	"router": "index.js",
-	"dependencies": {}
+	"dependencies": {
+		"node-fetch@2": "*"
+	}
 }
