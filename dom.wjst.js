@@ -93,6 +93,9 @@ class Dom {
 			}
 		});
 	}
+	exists(elementId) {
+		return !!document.getElementById(elementId);
+	}
 }
 
 export default new Dom();
