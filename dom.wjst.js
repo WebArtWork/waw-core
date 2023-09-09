@@ -41,7 +41,7 @@ class Dom {
 		const element = document.getElementById(elementId);
 
 		if (element) {
-			childElement.innerHTML = '';
+			element.innerHTML = '';
 		} else {
 			console.error(`Element with ID ${elementId} not found.`);
 		}
