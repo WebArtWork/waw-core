@@ -1,6 +1,6 @@
 class Dom {
 	template(elementId, variables = {}) {
-		const sourceElement = document.getElementById('template-'+sourceSelector);
+		const sourceElement = document.getElementById('template-'+ elementId);
 
 		if (sourceElement) {
 			let code = sourceElement.innerHTML;
@@ -16,7 +16,7 @@ class Dom {
 	}
 
 	replace(elementId, childHtml) {
-		const parentElement = document.getElementById(parentSelector);
+		const parentElement = document.getElementById(elementId);
 
 		if (parentElement) {
 			parentElement.innerHTML = childHtml;
@@ -26,7 +26,7 @@ class Dom {
 	}
 
 	add(elementId, childHtml) {
-		const parentElement = document.getElementById(parentSelector);
+		const parentElement = document.getElementById(elementId);
 
 		if (parentElement) {
 			const childElement = document.createElement('div');
