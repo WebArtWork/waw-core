@@ -1,7 +1,7 @@
 const { exec } = require('child_process');
 const https = require('https');
 const fs = require('fs');
-const { Server } = require('http');
+const fetch = require("node-fetch");
 module.exports = async function(waw){
 	/* General use */
 		waw.exe = function(command, cb=()=>{}){
