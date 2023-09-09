@@ -1,5 +1,5 @@
 class Dom {
-	template(sourceSelector, variables = {}) {
+	template(elementId, variables = {}) {
 		const sourceElement = document.getElementById('template-'+sourceSelector);
 
 		if (sourceElement) {
@@ -11,21 +11,21 @@ class Dom {
 
 			return code;
 		} else {
-			console.error('Source element not found.');
+			console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
 
-	replace(parentSelector, childHtml) {
+	replace(elementId, childHtml) {
 		const parentElement = document.getElementById(parentSelector);
 
 		if (parentElement) {
 			parentElement.innerHTML = childHtml;
 		} else {
-			console.error('Parent element not found.');
+			console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
 
-	add(parentSelector, childHtml) {
+	add(elementId, childHtml) {
 		const parentElement = document.getElementById(parentSelector);
 
 		if (parentElement) {
@@ -33,7 +33,7 @@ class Dom {
 			childElement.innerHTML = childHtml;
 			parentElement.appendChild(childElement);
 		} else {
-			console.error('Parent element not found.');
+			console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
 
@@ -61,7 +61,7 @@ class Dom {
 		const element = document.getElementById(elementId);
 
 		if (!element) {
-			console.error(`Element with ID '${id}' not found.`);
+			console.error(`Element with ID '${elementId}' not found.`);
 			return;
 		}
 
