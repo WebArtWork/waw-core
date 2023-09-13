@@ -1,12 +1,12 @@
 class Dom {
 	template(elementId, variables = {}) {
-		const sourceElement = document.getElementById('template-'+ elementId);
+		const sourceElement = document.getElementById("template-" + elementId);
 
 		if (sourceElement) {
 			let code = sourceElement.innerHTML;
 
 			for (const variable in variables) {
-				code = code.split('{' + variable + '}').join(variables[variable]);
+				code = code.split("{" + variable + "}").join(variables[variable]);
 			}
 
 			return code;
@@ -29,7 +29,7 @@ class Dom {
 		const parentElement = document.getElementById(elementId);
 
 		if (parentElement) {
-			const childElement = document.createElement('div');
+			const childElement = document.createElement("div");
 			childElement.innerHTML = childHtml;
 			parentElement.appendChild(childElement);
 		} else {
@@ -41,7 +41,7 @@ class Dom {
 		const element = document.getElementById(elementId);
 
 		if (element) {
-			element.innerHTML = '';
+			element.innerHTML = "";
 		} else {
 			console.error(`Element with ID ${elementId} not found.`);
 		}
@@ -57,7 +57,7 @@ class Dom {
 		}
 	}
 
-		click(elementId, callback) {
+	click(elementId, callback) {
 		const element = document.getElementById(elementId);
 
 		if (!element) {
@@ -66,20 +66,21 @@ class Dom {
 		}
 
 		// Attach the click event listener
-		element.addEventListener('click', callback);
+		element.addEventListener("click", callback);
 	}
 
-		value(elementId) {
+	value(elementId) {
 		const element = document.getElementById(elementId);
 
 		if (element) {
 			return element.value;
 		} else {
 			console.error(`Element with ID '${elementId}' not found.`);
-			return '';
+			return "";
 		}
 	}
-		enter(elementId, callback) {
+
+	enter(elementId, callback) {
 		const inputElement = document.getElementById(elementId);
 
 		if (!inputElement) {
@@ -87,14 +88,26 @@ class Dom {
 			return;
 		}
 
-		inputElement.addEventListener('keypress', (event) => {
-			if (event.key === 'Enter') {
+		inputElement.addEventListener("keypress", (event) => {
+			if (event.key === "Enter") {
 				callback(event);
 			}
 		});
 	}
+
 	exists(elementId) {
 		return !!document.getElementById(elementId);
+	}
+
+	attr(elementId, attr) {
+		const inputElement = document.getElementById(elementId);
+
+		if (!inputElement) {
+			console.error(`Element with ID '${elementId}' not found.`);
+			return;
+		}
+
+		return inputElement.getAttribute(attr);
 	}
 }
 
