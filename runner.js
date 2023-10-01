@@ -39,6 +39,31 @@ const rmSyncOptions = {
 	force: true
 };
 
+const gitignore = `node_modules
+package-lock.json`;
+const YEAR = new Date().getFullYear();
+const LICENSE = `The MIT License (MIT)
+
+Copyright (c) YEAR
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`;
+
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
 	process.exit(1);
@@ -256,7 +281,30 @@ const update_module = async (waw, module, callback) => {
 
 	const temp = path.join(location, 'node_modules', '.temp');
 
+	const name = path.basename(location);
+
 	fs.rmSync(path.join(location, '.temp'), rmSyncOptions);
+
+	if (!fs.existsSync(path.join(location, '.gitignore'))) {
+		fs.writeFileSync(path.join(location, '.gitignore'), gitignore, 'utf8');
+	}
+
+	if (!fs.existsSync(path.join(location, 'README.md'))) {
+		fs.writeFileSync(path.join(location, 'README.md'), `# waw module ${name}`, 'utf8');
+	}
+
+	if (
+		!fs.existsSync(path.join(location, 'LICENSE'))
+	) {
+		fs.writeFileSync(path.join(location, 'LICENSE'), LICENSE.replace('YEAR', YEAR), 'utf8');
+	}
+	const license = fs.readFileSync(path.join(location, 'LICENSE'), 'utf8');
+	if (
+		license.startsWith('The MIT License (MIT)') &&
+		!license.includes(YEAR)
+	) {
+		fs.writeFileSync(path.join(location, 'LICENSE'), LICENSE.replace('YEAR', YEAR), 'utf8');
+	}
 
 	waw.fetch(temp, module.config.repo, err => {
 		if (fs.existsSync(path.join(location, '.git'))) {
@@ -277,16 +325,6 @@ const update_module = async (waw, module, callback) => {
 		);
 
 		fs.rmSync(temp, rmSyncOptions);
-
-		if (fs.existsSync(temp)) {
-			exe(`rm -rf ${temp}`);
-		}
-
-		if (fs.existsSync(temp)) {
-			console.error(`There is problem on deleting .temp folder on ${location}, process is stopped.`);
-
-			process.exit(0);
-		}
 
 		if (fs.existsSync(path.join(location, '.git'))) {
 			const command = `cd ${location} && `;
