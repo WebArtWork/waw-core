@@ -34,6 +34,11 @@ const css_wjst_list = {
 	'6) Skeleton': 'https://github.com/WebArtWork/wjst-cssSkeleton.git'
 };
 
+const rmSyncOptions = {
+	recursive: true,
+	force: true
+}
+
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
 	process.exit(1);
@@ -251,18 +256,14 @@ const update_module = async (waw, module, callback) => {
 
 	const temp = path.join(location, '.temp');
 
-	if (fs.existsSync(path.join(location, 'temp'))) {
-		fs.rmSync(path.join(location, 'temp'), { recursive: true });
-	}
-
 	waw.fetch(temp, module.config.repo, err => {
 		if (fs.existsSync(path.join(location, '.git'))) {
-			fs.rmSync(path.join(location, '.git'), { recursive: true });
+			fs.rmSync(path.join(location, '.git'), rmSyncOptions);
 		}
 
 		if (!path.join(temp, '.git')) {
 			if (fs.existsSync(temp)) {
-				fs.rmSync(temp, { recursive: true });
+				fs.rmSync(temp, rmSyncOptions);
 			}
 
 			return callback();
@@ -273,7 +274,7 @@ const update_module = async (waw, module, callback) => {
 			path.join(location, '.git')
 		);
 
-		fs.rmSync(temp, { recursive: true });
+		fs.rmSync(temp, rmSyncOptions);
 
 
 		if (fs.existsSync(path.join(location, '.git'))) {
@@ -287,7 +288,7 @@ const update_module = async (waw, module, callback) => {
 				exe(command + 'git push origin "' + branch + '"');
 			} catch (error) { }
 
-			fs.rmSync(path.join(location, '.git'), { recursive: true });
+			fs.rmSync(path.join(location, '.git'), rmSyncOptions);
 		}
 
 		callback();
