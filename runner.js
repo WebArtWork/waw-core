@@ -249,7 +249,11 @@ const update_module = async (waw, module, callback) => {
 
 	const location = module.__root;
 
-	const temp = path.join(location, 'temp');
+	const temp = path.join(location, '.temp');
+
+	if (fs.existsSync(path.join(location, 'temp'))) {
+		fs.rmSync(path.join(location, 'temp'), { recursive: true });
+	}
 
 	waw.fetch(temp, module.config.repo, err => {
 		if (fs.existsSync(path.join(location, '.git'))) {
