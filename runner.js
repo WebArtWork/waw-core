@@ -16,6 +16,21 @@ const repo_list = {
 	'6) Wawify Template': 'https://github.com/WebArtWork/Wawify.git'
 };
 
+const repo_startup_list = {
+	'1) Wawify': 'https://github.com/WebArtWork/Wawify.git',
+	'2) Neryxomka': 'https://github.com/WebArtWork/Neryxomka.git',
+	'3) City': 'https://github.com/WebArtWork/City.git',
+	'4) CarByWorld': 'https://github.com/WebArtWork/CarByWorld.git',
+	'5) Animals': 'https://github.com/WebArtWork/Animals.git',
+	'6) Body': 'https://github.com/WebArtWork/Body.git',
+	'7) Agro': 'https://github.com/WebArtWork/Agro.git',
+	'8) Medicine': 'https://github.com/WebArtWork/Medicine.git',
+	'9) Electronics': 'https://github.com/WebArtWork/Electronics.git',
+	'10) Food': 'https://github.com/WebArtWork/Food.git',
+	'11) eContent': 'https://github.com/WebArtWork/eContent.git',
+	'12) Cybersport': 'https://github.com/WebArtWork/Cybersport.git',
+};
+
 const css_ngx_list = {
 	'1) Basic': 'https://github.com/WebArtWork/ngx-css.git',
 	'2) Bootstrap': 'https://github.com/WebArtWork/ngx-cssBootstrap.git',
@@ -40,7 +55,8 @@ const rmSyncOptions = {
 };
 
 const gitignore = `node_modules
-package-lock.json`;
+package-lock.json
+`;
 const YEAR = new Date().getFullYear();
 const LICENSE = `The MIT License (MIT)
 
@@ -62,7 +78,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.`;
+SOFTWARE.
+`;
 
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
