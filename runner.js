@@ -346,8 +346,6 @@ const update_module = async (waw, module, callback) => {
 		if (fs.existsSync(path.join(location, '.git'))) {
 			const command = `cd ${location} && `;
 
-			exe(command + 'git rm --cached -r .');
-
 			exe(command + 'git add --all .');
 
 			try {
