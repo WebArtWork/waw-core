@@ -37,7 +37,7 @@ const css_wjst_list = {
 const rmSyncOptions = {
 	recursive: true,
 	force: true
-}
+};
 
 module.exports.love = function (waw) {
 	console.log('waw Loves you :) ');
