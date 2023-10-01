@@ -254,7 +254,9 @@ const update_module = async (waw, module, callback) => {
 
 	const location = module.__root;
 
-	const temp = path.join(location, '.temp');
+	const temp = path.join(location, 'node_modules', '.temp');
+
+	fs.rmSync(path.join(location, '.temp'), rmSyncOptions);
 
 	waw.fetch(temp, module.config.repo, err => {
 		if (fs.existsSync(path.join(location, '.git'))) {
@@ -276,6 +278,15 @@ const update_module = async (waw, module, callback) => {
 
 		fs.rmSync(temp, rmSyncOptions);
 
+		if (fs.existsSync(temp)) {
+			exe(`rm -rf ${temp}`);
+		}
+
+		if (fs.existsSync(temp)) {
+			console.error(`There is problem on deleting .temp folder on ${location}, process is stopped.`);
+
+			process.exit(0);
+		}
 
 		if (fs.existsSync(path.join(location, '.git'))) {
 			const command = `cd ${location} && `;
