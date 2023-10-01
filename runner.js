@@ -1,5 +1,6 @@
-const fs = require('fs');
+const exe = require('child_process').execSync;
 const path = require('path');
+const fs = require('fs');
 const defaults = {
 	module: {
 		default: __dirname + '/module/default'
@@ -270,8 +271,9 @@ const update_module = async (waw, module, callback) => {
 
 		fs.rmSync(temp, { recursive: true });
 
+
 		if (fs.existsSync(path.join(location, '.git'))) {
-			const command = 'cd ./src/app/modules/' + module.name + ' && ';
+			const command = `cd ${location} && `;
 
 			exe(command + 'git add --all .');
 
@@ -297,12 +299,12 @@ module.exports.sync = async waw => {
 	}
 
 	let countdown = waw.modules.length;
-	
+
      if (!countdown) {
 	    console.log('There was no modules to synchronize');
 	    process.exit(1);
 }
-	
+
 	if (waw.argv.length === 1) {
 		for (const module of waw.modules) {
 			fetch_module(waw, module.__root, () => {
