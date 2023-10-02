@@ -9,6 +9,10 @@ class Core {
 		}
 	}
 
+	back() {
+		window.history.back();
+	}
+
 	waitUntil(conditionFunc, interval = 1000) {
 		if (typeof conditionFunc === 'function') {
 			return new Promise((resolve) => {
