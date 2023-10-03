@@ -36,6 +36,11 @@ class Dom {
 			console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
+	  addToBody(childHtml) {
+  		const childElement = document.createElement("div");
+   			childElement.innerHTML = childHtml;
+    			document.body.appendChild(childElement);
+ 		}
 
 	clear(elementId) {
 		const element = document.getElementById(elementId);
