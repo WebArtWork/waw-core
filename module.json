@@ -5,6 +5,6 @@
 	"runner": "runner.js",
 	"router": "index.js",
 	"dependencies": {
-		"node-fetch@2": "*"
+		"node-fetch": "2"
 	}
 }
