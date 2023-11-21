@@ -102,6 +102,19 @@ class Dom {
 		});
 	}
 
+	keypress(elementId, callback) {
+		const inputElement = document.getElementById(elementId);
+
+		if (!inputElement) {
+			console.error(`Element with ID '${elementId}' not found.`);
+			return;
+		}
+
+		inputElement.addEventListener("keypress", (event) => {
+			callback(event);
+		});
+	}
+
 	exists(elementId) {
 		return !!document.getElementById(elementId);
 	}
