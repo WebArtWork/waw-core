@@ -29,8 +29,6 @@ class Dom {
 		const parentElement = document.getElementById(elementId);
 
 		if (parentElement) {
-			const childElement = document.createElement("div");
-			childElement.innerHTML = childHtml;
 			parentElement.appendChild(childHtml);
 		} else {
 			console.error(`Element with ID '${elementId}' not found.`);
