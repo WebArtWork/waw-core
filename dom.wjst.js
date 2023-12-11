@@ -29,9 +29,9 @@ class Dom {
 		const parentElement = document.getElementById(elementId);
 
 		if (parentElement) {
-			parentElement.appendChild(childHtml);
+			parentElement.innerHTML += childHtml;
 		} else {
-			console.error(`Element with ID '${elementId}' not found.`);
+		console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
 	addToBody(childHtml) {
