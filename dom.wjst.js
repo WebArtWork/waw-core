@@ -31,7 +31,7 @@ class Dom {
 		if (parentElement) {
 			const childElement = document.createElement("div");
 			childElement.innerHTML = childHtml;
-			parentElement.appendChild(childElement);
+			parentElement.appendChild(childHtml);
 		} else {
 			console.error(`Element with ID '${elementId}' not found.`);
 		}
