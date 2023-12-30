@@ -12,23 +12,22 @@ const repo_list = {
 	'2) waw Template': 'https://github.com/WebArtWork/wjst-default.git',
 	'3) waw Server': 'https://github.com/WebArtWork/waw-default.git',
 	'4) waw Server + Angular + Template': 'https://github.com/WebArtWork/ngx-platform.git',
-	'5) Neryxomka Template': 'https://github.com/WebArtWork/Neryxomka.git',
-	'6) Wawify Template': 'https://github.com/WebArtWork/Wawify.git'
+	'5) waw Startup': 'startup'
 };
 
 const repo_startup_list = {
-	'1) Wawify': 'https://github.com/WebArtWork/Wawify.git',
-	'2) Neryxomka': 'https://github.com/WebArtWork/Neryxomka.git',
-	'3) City': 'https://github.com/WebArtWork/City.git',
-	'4) CarByWorld': 'https://github.com/WebArtWork/CarByWorld.git',
-	'5) Animals': 'https://github.com/WebArtWork/Animals.git',
-	'6) Body': 'https://github.com/WebArtWork/Body.git',
-	'7) Agro': 'https://github.com/WebArtWork/Agro.git',
-	'8) Medicine': 'https://github.com/WebArtWork/Medicine.git',
-	'9) Electronics': 'https://github.com/WebArtWork/Electronics.git',
-	'10) Food': 'https://github.com/WebArtWork/Food.git',
-	'11) eContent': 'https://github.com/WebArtWork/eContent.git',
-	'12) Cybersport': 'https://github.com/WebArtWork/Cybersport.git',
+	'1) Real Estate': 'git@github.com:WebArtWork/startup-realestate.git',
+	'2) Car': 'git@github.com:WebArtWork/startup-car.git',
+	'4) Medicine': 'git@github.com:WebArtWork/startup-medicine.git',
+	'3) Animals': 'git@github.com:WebArtWork/startup-animals.git',
+	'5) Food': 'git@github.com:WebArtWork/startup-food.git',
+	'6) Body': 'git@github.com:WebArtWork/startup-body.git',
+	'7) Clothes': 'git@github.com:WebArtWork/startup-clothes.git',
+	'8) Electronics': 'git@github.com:WebArtWork/startup-electronics.git',
+	'9) City': 'git@github.com:WebArtWork/startup-city.git',
+	'10) Agro': 'git@github.com:WebArtWork/startup-agro.git',
+	'11) Cybersport': 'git@github.com:WebArtWork/startup-cybersport.git',
+	'12) Content': 'git@github.com:WebArtWork/startup-content.git',
 };
 
 const css_ngx_list = {
@@ -140,8 +139,24 @@ module.exports.love = function (waw) {
 					text += '\nChoose number: ';
 					return waw.readline.question(text, function(answer){
 						if(!answer||!repos[parseInt(answer)]) return new_project(waw);
-						waw.new_project.repo = repos[parseInt(answer)];
-						new_project(waw);
+
+						if (repos[parseInt(answer)] === 'startup') {
+							text = 'Which startup you want to start with?', counter=0, repos={};
+							for(let key in repo_startup_list){
+								repos[++counter] = repo_startup_list[key];
+								text += '\n'+key;
+							}
+							text += '\nChoose number: ';
+
+							return waw.readline.question(text, function(answer){
+								if(!answer||!repos[parseInt(answer)]) return new_project(waw);
+								waw.new_project.repo = repos[parseInt(answer)];
+								new_project(waw);
+							});
+						} else {
+							waw.new_project.repo = repos[parseInt(answer)];
+							new_project(waw);
+						}
 					});
 				}
 			}
