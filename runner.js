@@ -141,7 +141,7 @@ module.exports.love = function (waw) {
 						if(!answer||!repos[parseInt(answer)]) return new_project(waw);
 
 						if (repos[parseInt(answer)] === 'startup') {
-							text = 'Which startup you want to start with?', counter=0, repos={};
+							text = 'Which startup theme you want to start with?', counter=0, repos={};
 							for(let key in repo_startup_list){
 								repos[++counter] = repo_startup_list[key];
 								text += '\n'+key;
