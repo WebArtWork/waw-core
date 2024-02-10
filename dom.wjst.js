@@ -34,6 +34,7 @@ class Dom {
 		console.error(`Element with ID '${elementId}' not found.`);
 		}
 	}
+
 	addToBody(childHtml) {
 		const childElement = document.createElement("div");
 
@@ -126,6 +127,20 @@ class Dom {
 		}
 
 		return inputElement.getAttribute(attr);
+	}
+
+	submit(id, callback) {
+		document.getElementById(id).addEventListener('submit', function (event) {
+			event.preventDefault();
+			const inputs = event.target.elements;
+			const submition = {};
+			for (var i = 0; i < inputs.length; i++) {
+				if (inputs[i].type !== 'submit') {
+					submition[inputs[i].name] = inputs[i].value;
+				}
+			}
+			callback(submition);
+		});
 	}
 }
 
