@@ -132,11 +132,10 @@ class Dom {
 	submit(id, callback) {
 		document.getElementById(id).addEventListener('submit', function (event) {
 			event.preventDefault();
-			const inputs = event.target.elements;
 			const submition = {};
-			for (var i = 0; i < inputs.length; i++) {
-				if (inputs[i].type !== 'submit') {
-					submition[inputs[i].name] = inputs[i].value;
+			for (const input of event.target.elements) {
+				if (input.name && input.value) {
+					submition[input.name] = input.value;
 				}
 			}
 			callback(submition);
