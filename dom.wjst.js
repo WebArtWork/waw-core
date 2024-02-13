@@ -63,16 +63,28 @@ class Dom {
 		}
 	}
 
-	click(elementId, callback) {
-		const element = document.getElementById(elementId);
-
-		if (!element) {
-			console.error(`Element with ID '${elementId}' not found.`);
-			return;
+	click(idAttributeClass, callback) {
+		if (idAttributeClass.startsWith(".")) {
+			document.querySelectorAll(idAttributeClass).forEach((element) => {
+				element.addEventListener("click", (event) => {
+					callback(element, event);
+				});
+			});
+		} else if (document.getElementById(idAttributeClass)) {
+			document
+				.getElementById(idAttributeClass)
+				.addEventListener("click", (event) => {
+					callback(document.getElementById(idAttributeClass), event);
+				});
+		} else {
+			document
+				.querySelectorAll(`[${idAttributeClass}]`)
+				.forEach((element) => {
+					element.addEventListener("click", (event) => {
+						callback(element, event);
+					});
+				});
 		}
-
-		// Attach the click event listener
-		element.addEventListener("click", callback);
 	}
 
 	value(elementId) {
