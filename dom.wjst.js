@@ -64,6 +64,7 @@ class Dom {
 	}
 
 	click(idAttributeClass, callback) {
+		console.log(idAttributeClass, document.getElementById(idAttributeClass));
 		if (idAttributeClass.startsWith(".")) {
 			document.querySelectorAll(idAttributeClass).forEach((element) => {
 				element.addEventListener("click", (event) => {
@@ -145,12 +146,39 @@ class Dom {
 		document.getElementById(id).addEventListener('submit', function (event) {
 			event.preventDefault();
 			const submition = {};
-			for (const input of event.target.elements) {
-				if (input.name && input.value) {
-					submition[input.name] = input.value;
+			if (Array.isArray(event.target.elements)) {
+				for (const input of event.target.elements) {
+					if (input.name && input.value) {
+						submition[input.name] = input.value;
+					}
 				}
 			}
 			callback(submition);
+		});
+	}
+
+	element(id) {
+		return document.getElementById(id);
+	}
+
+	change(id, callback) {
+		const element = document.getElementById(id);
+		if (!element) {
+			return callback();
+		}
+		element.addEventListener('change', function (event) {
+			event.preventDefault();
+			if (Array.isArray(event.target.elements)) {
+				const submition = {};
+				for (const input of event.target.elements) {
+					if (input.name && input.value) {
+						submition[input.name] = input.value;
+					}
+				}
+				callback(submition);
+			} else {
+				callback(element);
+			}
 		});
 	}
 }
