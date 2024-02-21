@@ -146,7 +146,7 @@ class Dom {
 		document.getElementById(id).addEventListener('submit', function (event) {
 			event.preventDefault();
 			const submition = {};
-			if (Array.isArray(event.target.elements)) {
+			if (event.target.elements)  {
 				for (const input of event.target.elements) {
 					if (input.name && input.value) {
 						submition[input.name] = input.value;
@@ -168,7 +168,7 @@ class Dom {
 		}
 		element.addEventListener('change', function (event) {
 			event.preventDefault();
-			if (Array.isArray(event.target.elements)) {
+			if (event.target.elements) {
 				const submition = {};
 				for (const input of event.target.elements) {
 					if (input.name && input.value) {
