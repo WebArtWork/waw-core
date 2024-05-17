@@ -40,7 +40,7 @@ module.exports = async function(waw){
 		// }
 	/* Http Management */
 		waw.http = function(hostname, port = 443){
-			const post = function(method){
+			const post = (method, headers) => {
 				return async function (path, body, callback) {
 					try {
 						const response = await fetch(
@@ -48,6 +48,7 @@ module.exports = async function(waw){
 							{
 								method,
 								headers: {
+									...this.headers,
 									'Content-Type': 'application/json',
 								},
 								body: JSON.stringify(body)
@@ -64,9 +65,13 @@ module.exports = async function(waw){
 				}
 			}
 			return {
+				headers: {},
 				get: async function(path, callback){
 					try {
-						const response = await fetch(hostname + ':' + port + path);
+						const response = await fetch(hostname + ':' + port + path, {
+							method: 'GET',
+							headers: this.headers
+						});
 						if (!response.ok) {
 							callback(false);
 						} else {
