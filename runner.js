@@ -14,6 +14,12 @@ const repo_list = {
 	"4) waw Server + Angular + Template":
 		"https://github.com/WebArtWork/ngx-platform.git",
 	"5) waw Startup": "startup",
+	"6) IT Kamianets": "itkp"
+};
+
+const itkp = {
+	"1) Template Server Side Render": "git@github.com:IT-Kamianets/wjst-default.git",
+	"2) Angular Client Side Render": "git@github.com:IT-Kamianets/ngx-default.git"
 };
 
 const repo_startup_list = {
@@ -152,6 +158,22 @@ const new_project = function (waw) {
 							(repos = {});
 						for (let key in repo_startup_list) {
 							repos[++counter] = repo_startup_list[key];
+							text += "\n" + key;
+						}
+						text += "\nChoose number: ";
+
+						return waw.readline.question(text, function (answer) {
+							if (!answer || !repos[parseInt(answer)])
+								return new_project(waw);
+							waw.new_project.repo = repos[parseInt(answer)];
+							new_project(waw);
+						});
+					} else if (repos[parseInt(answer)] === "itkp") {
+						(text = "Which project you want to start with?"),
+							(counter = 0),
+							(repos = {});
+						for (let key in itkp) {
+							repos[++counter] = itkp[key];
 							text += "\n" + key;
 						}
 						text += "\nChoose number: ";
