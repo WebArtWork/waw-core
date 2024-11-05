@@ -7,14 +7,14 @@ const defaults = {
 	},
 };
 
+// "5) waw Startup": "startup",
 const repo_list = {
 	"1) waw Angular": "https://github.com/WebArtWork/ngx-default.git",
 	"2) waw Template": "https://github.com/WebArtWork/wjst-default.git",
 	"3) waw Server": "https://github.com/WebArtWork/waw-default.git",
 	"4) waw Server + Angular + Template":
 		"https://github.com/WebArtWork/ngx-platform.git",
-	"5) waw Startup": "startup",
-	"6) IT Kamianets": "itkp"
+	"5) IT Kamianets": "itkp"
 };
 
 const itkp = {
@@ -417,7 +417,7 @@ const update_module = async (waw, module, callback) => {
 					exe(command + 'git commit -m "' + waw.argv[1] + '"');
 
 					exe(command + 'git push origin "' + branch + '"');
-				} catch (error) {}
+				} catch (error) { }
 
 				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
 			}
