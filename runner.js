@@ -9,18 +9,18 @@ const defaults = {
 
 const repo_list = {
 	"1) waw Angular": "https://github.com/WebArtWork/ngx-default.git",
-	// "1) waw Angular": "https://github.com/WebArtWork/vue-default.git",
-	// "1) waw Angular": "https://github.com/WebArtWork/react-default.git",
-	"2) waw Template": "https://github.com/WebArtWork/wjst-default.git",
-	"3) waw Server": "https://github.com/WebArtWork/waw-default.git",
-	"4) waw Server + Angular + Template":
+	"2) waw Vue": "https://github.com/WebArtWork/vue-default.git",
+	"3) waw React": "https://github.com/WebArtWork/react-default.git",
+	"4) waw Template": "https://github.com/WebArtWork/wjst-default.git",
+	"5) waw Server": "https://github.com/WebArtWork/waw-default.git",
+	"6) waw Server + Angular + Template":
 		"https://github.com/WebArtWork/ngx-platform.git",
-	// "4) waw Server + Angular + Template":
-	// 	"https://github.com/WebArtWork/vue-platform.git",
-	// "4) waw Server + Angular + Template":
-	// 	"https://github.com/WebArtWork/react-platform.git",
-	"5) waw Startup": "startup",
-	"6) IT Kamianets": "itkp"
+	"7) waw Server + Vue + Template":
+		"https://github.com/WebArtWork/vue-platform.git",
+	"8) waw Server + React + Template":
+		"https://github.com/WebArtWork/react-platform.git",
+	"9) waw Startup": "startup",
+	"10) IT Kamianets": "itkp"
 };
 
 const itkp = {
