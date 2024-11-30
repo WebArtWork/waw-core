@@ -7,14 +7,20 @@ const defaults = {
 	},
 };
 
-// "5) waw Startup": "startup",
 const repo_list = {
 	"1) waw Angular": "https://github.com/WebArtWork/ngx-default.git",
+	// "1) waw Angular": "https://github.com/WebArtWork/vue-default.git",
+	// "1) waw Angular": "https://github.com/WebArtWork/react-default.git",
 	"2) waw Template": "https://github.com/WebArtWork/wjst-default.git",
 	"3) waw Server": "https://github.com/WebArtWork/waw-default.git",
 	"4) waw Server + Angular + Template":
 		"https://github.com/WebArtWork/ngx-platform.git",
-	"5) IT Kamianets": "itkp"
+	// "4) waw Server + Angular + Template":
+	// 	"https://github.com/WebArtWork/vue-platform.git",
+	// "4) waw Server + Angular + Template":
+	// 	"https://github.com/WebArtWork/react-platform.git",
+	"5) waw Startup": "startup",
+	"6) IT Kamianets": "itkp"
 };
 
 const itkp = {
@@ -25,16 +31,16 @@ const itkp = {
 const repo_startup_list = {
 	"1) Real Estate": "git@github.com:WebArtWork/startup-realestate.git",
 	"2) Car": "git@github.com:WebArtWork/startup-car.git",
-	"4) Medicine": "git@github.com:WebArtWork/startup-medicine.git",
-	"3) Animals": "git@github.com:WebArtWork/startup-animals.git",
-	"5) Food": "git@github.com:WebArtWork/startup-food.git",
-	"6) Body": "git@github.com:WebArtWork/startup-body.git",
-	"7) Clothes": "git@github.com:WebArtWork/startup-clothes.git",
-	"8) Electronics": "git@github.com:WebArtWork/startup-electronics.git",
-	"9) City": "git@github.com:WebArtWork/startup-city.git",
-	"10) Agro": "git@github.com:WebArtWork/startup-agro.git",
-	"11) Cybersport": "git@github.com:WebArtWork/startup-cybersport.git",
-	"12) Content": "git@github.com:WebArtWork/startup-content.git",
+	"3) Medicine": "git@github.com:WebArtWork/startup-medicine.git",
+	"4) Food": "git@github.com:WebArtWork/startup-food.git",
+	"5) Body": "git@github.com:WebArtWork/startup-body.git",
+	"6) Clothes": "git@github.com:WebArtWork/startup-clothes.git",
+	"7) Electronics": "git@github.com:WebArtWork/startup-electronics.git",
+	"8) City": "git@github.com:WebArtWork/startup-city.git",
+	"9) Agro": "git@github.com:WebArtWork/startup-agro.git",
+	"10) Cybersport": "git@github.com:WebArtWork/startup-cybersport.git",
+	// "3) Animals": "git@github.com:WebArtWork/startup-animals.git",
+	// "12) Content": "git@github.com:WebArtWork/startup-content.git",
 };
 
 const css_ngx_list = {
@@ -417,7 +423,7 @@ const update_module = async (waw, module, callback) => {
 					exe(command + 'git commit -m "' + waw.argv[1] + '"');
 
 					exe(command + 'git push origin "' + branch + '"');
-				} catch (error) { }
+				} catch (error) {}
 
 				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
 			}
