@@ -207,8 +207,14 @@ const new_project = function (waw) {
 			if (fs.existsSync(folder + "/.git")) {
 				fs.rmSync(folder + "/.git", { recursive: true });
 			}
+
+			if (fs.existsSync(folder + "/.github")) {
+				fs.rmSync(folder + "/.github", { recursive: true });
+			}
+
 			console.log("Your project has been generated successfully");
-			process.exit(1);
+
+			process.exit();
 		},
 		waw.argv.length > 2 ? waw.argv[2] : "master"
 	);
@@ -217,7 +223,7 @@ module.exports.new = new_project;
 module.exports.n = new_project;
 
 /*
- *	Create new project
+ *	Update css folder
  */
 const change_css = function (waw) {
 	const isAngular = fs.existsSync(path.join(process.cwd(), "angular.json"));
@@ -269,6 +275,7 @@ const change_css = function (waw) {
 	);
 };
 module.exports.css = change_css;
+
 /*
  *	Version Management
  */
@@ -423,7 +430,7 @@ const update_module = async (waw, module, callback) => {
 					exe(command + 'git commit -m "' + waw.argv[1] + '"');
 
 					exe(command + 'git push origin "' + branch + '"');
-				} catch (error) {}
+				} catch (error) { }
 
 				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
 			}
