@@ -20,12 +20,14 @@ const repo_list = {
 	"8) waw Server + React + Template":
 		"https://github.com/WebArtWork/react-platform.git",
 	"9) waw Startup": "startup",
-	"10) IT Kamianets": "itkp"
+	"10) IT Kamianets": "itkp",
 };
 
 const itkp = {
-	"1) Template, Server Side Render (usually profile or shops websites)": "git@github.com:IT-Kamianets/wjst-default.git",
-	"2) Angular, Client Side Render (usually CRM, mobile, games or desktop apps)": "git@github.com:IT-Kamianets/ngx-default.git"
+	"1) Template, Server Side Render (usually profile or shops websites)":
+		"git@github.com:IT-Kamianets/wjst-default.git",
+	"2) Angular, Client Side Render (usually CRM, mobile, games or desktop apps)":
+		"git@github.com:IT-Kamianets/ngx-default.git",
 };
 
 const repo_startup_list = {
@@ -430,7 +432,7 @@ const update_module = async (waw, module, callback) => {
 					exe(command + 'git commit -m "' + waw.argv[1] + '"');
 
 					exe(command + 'git push origin "' + branch + '"');
-				} catch (error) { }
+				} catch (error) {}
 
 				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
 			}
@@ -460,7 +462,7 @@ module.exports.sync = async (waw) => {
 	}
 
 	if (waw.argv.length === 1) {
-		const update = _module => {
+		const update = (_module) => {
 			if (_module.config.repo) {
 				console.log(`Module ${_module.name} has been synchronized`);
 			}
@@ -468,14 +470,14 @@ module.exports.sync = async (waw) => {
 				console.log("All modules were synchronized");
 				process.exit(1);
 			}
-		}
+		};
 		for (const _module of waw.modules) {
 			fetch_module(waw, _module.__root, () => {
 				update(_module);
 			});
 		}
 	} else if (waw.argv.length > 1) {
-		const update = _module => {
+		const update = (_module) => {
 			if (_module.config.repo) {
 				console.log(`Module ${_module.name} has been updated`);
 			}
@@ -483,7 +485,7 @@ module.exports.sync = async (waw) => {
 				console.log("All modules were updated and synchronized");
 				process.exit(1);
 			}
-		}
+		};
 		for (const _module of waw.modules) {
 			update_module(waw, _module, () => {
 				update(_module);
@@ -491,6 +493,75 @@ module.exports.sync = async (waw) => {
 		}
 	}
 };
+/*
+ *	GIT management
+ */
+
+const gitDefault = (waw) => {
+	process.exit();
+};
+
+const prepareReposFolder = (waw) => {
+	const reposFolder = path.join(waw.waw_root, ".git", ".repos");
+
+	if (!fs.existsSync(reposFolder)) {
+		fs.mkdirSync(reposFolder, { recursive: true });
+	}
+
+	return reposFolder;
+};
+
+const gitStore = async (waw) => {
+	const reposFolder = prepareReposFolder(waw);
+
+	const globalFolder = path.join(reposFolder, waw.argv.shift());
+
+	const gitFolder = path.join(process.cwd(), ".git");
+
+	await exe(`cp -rf ${gitFolder} ${globalFolder}`);
+
+	console.log("Git folder stored");
+
+	process.exit();
+};
+const gitRestore = async (waw) => {
+	const reposFolder = prepareReposFolder(waw);
+
+	const globalFolder = path.join(reposFolder, waw.argv.shift());
+
+	const gitFolder = path.join(process.cwd(), ".git");
+
+	await exe(`cp -rf ${globalFolder} ${gitFolder}`);
+
+	console.log("Git folder restored");
+
+	process.exit();
+};
+
+module.exports.git = (waw) => {
+	waw.argv.shift();
+
+	if (waw.argv.length) {
+		const command = waw.argv.shift();
+
+		switch (command) {
+			case "store":
+				waw.argv.length ? gitStore(waw) : gitDefault(waw);
+				break;
+
+			case "restore":
+				waw.argv.length ? gitRestore(waw) : gitDefault(waw);
+				break;
+
+			default:
+				gitDefault(waw);
+				break;
+		}
+	} else {
+		gitDefault(waw);
+	}
+};
+
 /*
  *	PM2 management
  */
