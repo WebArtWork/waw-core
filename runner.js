@@ -566,68 +566,80 @@ module.exports.git = (waw) => {
 /*
  *	PM2 management
  */
-let pm2;
-const install_pm2 = function (waw, callback) {
-	if (pm2) return callback();
-	if (!fs.existsSync(waw.waw_root + "/node_modules/pm2")) {
-		return waw.npmi(
-			{
-				name: "pm2",
-				version: "latest",
-				path: waw.waw_root,
-				forceInstall: true,
-				npmLoad: {
-					loglevel: "silent",
-				},
-			},
-			function () {
-				start(waw);
-			}
-		);
-	}
-	if (!pm2) pm2 = require(waw.waw_root + "/node_modules/pm2");
-	pm2.connect(function (err) {
+const pm2 = require("pm2");
+
+const start = (waw) => {
+	pm2.connect((err) => {
 		if (err) {
-			console.error(err);
+			console.error("PM2 connect error:", err);
+
 			process.exit(2);
 		}
-		if (!waw.config.pm2) waw.config.pm2 = {};
-		callback();
-	});
-};
-const start = function (waw) {
-	install_pm2(waw, function () {
+
 		pm2.start(
 			{
 				name: waw.config.name || process.cwd(),
 				script: waw.waw_root + "/app.js",
-				exec_mode: waw.config.pm2.exec_mode || "fork", //default fork
+				exec_mode: waw.config.pm2.exec_mode || "fork", // default fork
 				instances: waw.config.pm2.instances || 1,
 				max_memory_restart: waw.config.pm2.memory || "800M",
 			},
-			function (err, apps) {
+			(err) => {
 				pm2.disconnect();
-				process.exit(2);
+
+				if (err) {
+					console.error("PM2 start error:", err);
+
+					process.exit(2);
+				}
 			}
 		);
 	});
 };
 module.exports.start = start;
-const stop = function (waw) {
-	install_pm2(waw, function () {
-		pm2.delete(waw.config.name || process.cwd(), function (err, apps) {
-			pm2.disconnect();
+
+const stop = (waw) => {
+	pm2.connect((err) => {
+		if (err) {
+			console.error("PM2 connect error:", err);
+
 			process.exit(2);
+		}
+
+		pm2.delete(waw.config.name || process.cwd(), (err, apps) => {
+			pm2.disconnect();
+
+			if (err) {
+				console.error("PM2 stop error:", err);
+
+				process.exit(2);
+			}
 		});
 	});
 };
 module.exports.stop = stop;
-const restart = function (waw) {
-	install_pm2(waw, function () {
-		pm2.restart(waw.config.name || process.cwd());
+
+const restart = (waw) => {
+	pm2.connect((err) => {
+		if (err) {
+			console.error("PM2 connect error:", err);
+
+			process.exit(2);
+		}
+
+		pm2.restart(waw.config.name || process.cwd(), (err, proc) => {
+			pm2.disconnect();
+
+			if (err) {
+				console.error("PM2 restart error:", err);
+
+				process.exit(2);
+			}
+		});
 	});
 };
 module.exports.restart = restart;
+
 /*
  *	End of Core Runners
  */
