@@ -596,6 +596,10 @@ const start = (waw) => {
 				}
 			}
 		);
+
+		setTimeout(() => {
+			process.exit();
+		}, 1000);
 	});
 };
 module.exports.start = start;
@@ -617,6 +621,10 @@ const stop = (waw) => {
 				process.exit(2);
 			}
 		});
+
+		setTimeout(() => {
+			process.exit();
+		}, 1000);
 	});
 };
 module.exports.stop = stop;
@@ -638,6 +646,10 @@ const restart = (waw) => {
 				process.exit(2);
 			}
 		});
+
+		setTimeout(() => {
+			process.exit();
+		}, 1000);
 	});
 };
 module.exports.restart = restart;
