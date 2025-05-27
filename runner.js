@@ -576,6 +576,8 @@ const start = (waw) => {
 			process.exit(2);
 		}
 
+		waw.config.pm2 = waw.config.pm2 || {};
+
 		pm2.start(
 			{
 				name: waw.config.name || process.cwd(),
