@@ -20,14 +20,12 @@ const repo_list = {
 		"https://github.com/WebArtWork/vue-platform.git",
 	"9) waw Server + React + Wjst":
 		"https://github.com/WebArtWork/react-platform.git",
-	"10) waw Startup": "startup",
-	"11) IT Kamianets": "itkp",
+	"10) IT Kamianets": "itkp",
+	// "10) waw Startup": "startup",
 };
 
 const itkp = {
-	"1) Wjst, Server Side Render (usually profile or shops websites)":
-		"git@github.com:IT-Kamianets/wjst-default.git",
-	"2) Angular, Client Side Render (usually CRM, mobile, games or desktop apps)":
+	"1) Angular":
 		"git@github.com:IT-Kamianets/ngx-default.git",
 };
 
@@ -81,38 +79,6 @@ const css_wjst_list = {
 	"5) Bulma": "https://github.com/WebArtWork/wjst-cssBulma.git",
 	"6) Skeleton": "https://github.com/WebArtWork/wjst-cssSkeleton.git",
 };
-
-const rmSyncOptions = {
-	recursive: true,
-	force: true,
-};
-
-const gitignore = `node_modules
-package-lock.json
-`;
-const YEAR = new Date().getFullYear();
-const LICENSE = `The MIT License (MIT)
-
-Copyright (c) YEAR
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-`;
 
 const isAngular = fs.existsSync(path.join(process.cwd(), "angular.json"));
 const isReact = fs.existsSync(path.join(process.cwd(), "react.json"));
@@ -371,6 +337,7 @@ module.exports.v = version;
  */
 const new_module = function (waw) {
 	waw.server = typeof waw.server === "string" ? waw.server : "server";
+
 	if (!waw.path) {
 		if (
 			waw.ensure(
@@ -391,316 +358,26 @@ const new_module = function (waw) {
 };
 module.exports.add = new_module;
 module.exports.a = new_module;
+
 /*
  *	Sync management
  */
+module.exports.sync = require('./util.sync');
 
-const fetch_module = (waw, location, callback) => {
-	location = path.normalize(location);
-	if (!fs.existsSync(location + "/module.json")) {
-		return callback(false);
-	}
-	let json = waw.readJson(location + "/module.json");
-	if (!json.repo) {
-		return callback(false);
-	}
-	waw.fetch(location, json.repo, (err) => {
-		callback();
-		// waw.install(waw, location, callback);
-	});
-};
-
-const update_module = async (waw, module, callback) => {
-	const branch = waw.argv.length > 2 ? waw.argv[2] : "master";
-
-	const location = module.__root;
-
-	const temp = path.join(location, "node_modules", ".temp");
-
-	const name = path.basename(location);
-
-	fs.rmSync(path.join(location, ".temp"), rmSyncOptions);
-
-	if (!fs.existsSync(path.join(location, ".gitignore"))) {
-		fs.writeFileSync(path.join(location, ".gitignore"), gitignore, "utf8");
-	}
-
-	if (!fs.existsSync(path.join(location, "README.md"))) {
-		fs.writeFileSync(
-			path.join(location, "README.md"),
-			`# waw module ${name}`,
-			"utf8"
-		);
-	}
-
-	if (!fs.existsSync(path.join(location, "LICENSE"))) {
-		fs.writeFileSync(
-			path.join(location, "LICENSE"),
-			LICENSE.replace("YEAR", YEAR),
-			"utf8"
-		);
-	}
-	const license = fs.readFileSync(path.join(location, "LICENSE"), "utf8");
-	if (
-		license.startsWith("The MIT License (MIT)") &&
-		!license.includes(YEAR)
-	) {
-		fs.writeFileSync(
-			path.join(location, "LICENSE"),
-			LICENSE.replace("YEAR", YEAR),
-			"utf8"
-		);
-	}
-
-	waw.fetch(
-		temp,
-		module.config.repo,
-		(err) => {
-			if (fs.existsSync(path.join(location, ".git"))) {
-				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
-			}
-
-			if (!path.join(temp, ".git")) {
-				if (fs.existsSync(temp)) {
-					fs.rmSync(temp, rmSyncOptions);
-				}
-
-				return callback();
-			}
-
-			fs.renameSync(path.join(temp, ".git"), path.join(location, ".git"));
-
-			fs.rmSync(temp, rmSyncOptions);
-
-			if (fs.existsSync(path.join(location, ".git"))) {
-				const command = `cd ${location} && `;
-
-				exe(command + "git add --all .");
-
-				try {
-					exe(command + 'git commit -m "' + waw.argv[1] + '"');
-
-					exe(command + 'git push origin "' + branch + '"');
-				} catch (error) {}
-
-				fs.rmSync(path.join(location, ".git"), rmSyncOptions);
-			}
-
-			callback();
-		},
-		branch,
-		false
-	);
-};
-
-module.exports.sync = async (waw) => {
-	for (let i = waw.modules.length - 1; i >= 0; i--) {
-		waw.modules[i].config = waw.readJson(
-			path.join(waw.modules[i].__root, "module.json")
-		);
-		if (!waw.modules[i].config.repo) {
-			waw.modules.splice(i, 1);
-		}
-	}
-
-	let countdown = waw.modules.length;
-
-	if (!countdown) {
-		console.log("There was no modules to synchronize");
-		process.exit(1);
-	}
-
-	if (waw.argv.length === 1) {
-		const update = (_module) => {
-			if (_module.config.repo) {
-				console.log(`Module ${_module.name} has been synchronized`);
-			}
-			if (--countdown === 0) {
-				console.log("All modules were synchronized");
-				process.exit(1);
-			}
-		};
-		for (const _module of waw.modules) {
-			fetch_module(waw, _module.__root, () => {
-				update(_module);
-			});
-		}
-	} else if (waw.argv.length > 1) {
-		const update = (_module) => {
-			if (_module.config.repo) {
-				console.log(`Module ${_module.name} has been updated`);
-			}
-			if (--countdown === 0) {
-				console.log("All modules were updated and synchronized");
-				process.exit(1);
-			}
-		};
-		for (const _module of waw.modules) {
-			update_module(waw, _module, () => {
-				update(_module);
-			});
-		}
-	}
-};
 /*
  *	GIT management
  */
 
-const gitDefault = (waw) => {
-	process.exit();
-};
-
-const prepareReposFolder = (waw) => {
-	const reposFolder = path.join(waw.waw_root, ".git", ".repos");
-
-	if (!fs.existsSync(reposFolder)) {
-		fs.mkdirSync(reposFolder, { recursive: true });
-	}
-
-	return reposFolder;
-};
-
-const gitStore = async (waw) => {
-	const reposFolder = prepareReposFolder(waw);
-
-	const globalFolder = path.join(reposFolder, waw.argv.shift());
-
-	const gitFolder = path.join(process.cwd(), ".git");
-
-	await exe(`cp -rf ${gitFolder} ${globalFolder}`);
-
-	console.log("Git folder stored");
-
-	process.exit();
-};
-const gitRestore = async (waw) => {
-	const reposFolder = prepareReposFolder(waw);
-
-	const globalFolder = path.join(reposFolder, waw.argv.shift());
-
-	const gitFolder = path.join(process.cwd(), ".git");
-
-	await exe(`cp -rf ${globalFolder} ${gitFolder}`);
-
-	console.log("Git folder restored");
-
-	process.exit();
-};
-
-module.exports.git = (waw) => {
-	waw.argv.shift();
-
-	if (waw.argv.length) {
-		const command = waw.argv.shift();
-
-		switch (command) {
-			case "store":
-				waw.argv.length ? gitStore(waw) : gitDefault(waw);
-				break;
-
-			case "restore":
-				waw.argv.length ? gitRestore(waw) : gitDefault(waw);
-				break;
-
-			default:
-				gitDefault(waw);
-				break;
-		}
-	} else {
-		gitDefault(waw);
-	}
-};
+module.exports.git = require("./util.git");
 
 /*
  *	PM2 management
  */
-const pm2 = require("pm2");
+const pm2util = require("./util.pm2");
 
-const start = (waw) => {
-	pm2.connect((err) => {
-		if (err) {
-			console.error("PM2 connect error:", err);
-
-			process.exit(2);
-		}
-
-		waw.config.pm2 = waw.config.pm2 || {};
-
-		pm2.start(
-			{
-				name: waw.config.name || process.cwd(),
-				script: waw.waw_root + "/app.js",
-				exec_mode: waw.config.pm2.exec_mode || "fork", // default fork
-				instances: waw.config.pm2.instances || 1,
-				max_memory_restart: waw.config.pm2.memory || "800M",
-			},
-			(err) => {
-				pm2.disconnect();
-
-				if (err) {
-					console.error("PM2 start error:", err);
-
-					process.exit(2);
-				}
-			}
-		);
-
-		setTimeout(() => {
-			process.exit();
-		}, 1000);
-	});
-};
-module.exports.start = start;
-
-const stop = (waw) => {
-	pm2.connect((err) => {
-		if (err) {
-			console.error("PM2 connect error:", err);
-
-			process.exit(2);
-		}
-
-		pm2.delete(waw.config.name || process.cwd(), (err, apps) => {
-			pm2.disconnect();
-
-			if (err) {
-				console.error("PM2 stop error:", err);
-
-				process.exit(2);
-			}
-		});
-
-		setTimeout(() => {
-			process.exit();
-		}, 1000);
-	});
-};
-module.exports.stop = stop;
-
-const restart = (waw) => {
-	pm2.connect((err) => {
-		if (err) {
-			console.error("PM2 connect error:", err);
-
-			process.exit(2);
-		}
-
-		pm2.restart(waw.config.name || process.cwd(), (err, proc) => {
-			pm2.disconnect();
-
-			if (err) {
-				console.error("PM2 restart error:", err);
-
-				process.exit(2);
-			}
-		});
-
-		setTimeout(() => {
-			process.exit();
-		}, 1000);
-	});
-};
-module.exports.restart = restart;
+module.exports.start = pm2util.start;
+module.exports.stop = pm2util.stop;
+module.exports.restart = pm2util.restart;
 
 /*
  *	End of Core Runners
