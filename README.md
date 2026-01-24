@@ -66,4 +66,3 @@ waw css
 We welcome contributions to enhance the functionality of `waw-core`. Please refer to the [CONTRIBUTING.md](https://github.com/WebArtWork/waw-core/blob/master/CONTRIBUTING.md) file for guidelines on how to contribute.
 
 For more details, visit the [waw-core GitHub repository](https://github.com/WebArtWork/waw-core).
-

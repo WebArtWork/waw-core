@@ -108,7 +108,7 @@ const change_css = function (waw) {
 		"scss"
 	);
 
-	fs.rmSync(folder, { recursive: true });
+	fs.rmSync(folder, { recursive: true, force: true });
 	fs.mkdirSync(folder, { recursive: true });
 
 	waw.fetch(

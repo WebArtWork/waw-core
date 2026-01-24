@@ -29,4 +29,3 @@ Thank you for your interest in contributing to waw-core! We welcome all contribu
 - Maintain a professional and constructive attitude when reviewing contributions.
 
 Your contributions help make waw-core better, and we appreciate your support!
-

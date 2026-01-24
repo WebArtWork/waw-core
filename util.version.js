@@ -22,7 +22,7 @@ const version = function (waw) {
 	}
 
 	if (waw.modules && waw.modules.length) {
-		logs += "\nAccesible Modules: ";
+		logs += "\nAccessible Modules: ";
 		for (var i = 0; i < waw.modules.length; i++) {
 			if (i) {
 				logs += ", " + waw.modules[i].name;
@@ -33,7 +33,7 @@ const version = function (waw) {
 	}
 
 	console.log(logs);
-	process.exit(1);
+	process.exit(0);
 };
 
 module.exports = version;
