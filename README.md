@@ -1,68 +1,77 @@
 # waw-core
 
-waw-core is a foundational module for the waw framework, providing essential commands and functionalities to streamline project management across various applications.
+`waw-core` is the foundational module of the **waw framework**.
+It provides core CLI commands (project/module lifecycle + ops) and a small set of runtime utilities attached to the global `waw` object.
 
-## Key Features
+Core is intentionally minimal: it sets up common helpers and provides the CLI entrypoints that other modules build on.
 
-- **Project Initialization** – Quickly set up new projects with predefined templates using the `waw new` command.
-- **Module Management** – Easily add new modules to your project with the `waw add` command.
-- **Version Control** – Check the current version of the waw framework and its modules using `waw version`.
-- **Process Management** – Manage your application's processes using PM2 with the following commands:
-  - `waw start` – Starts the application using PM2.
-  - `waw stop` – Stops the running application.
-  - `waw restart` – Restarts the application.
-- **CSS Management** – Use `waw css` to list and switch between different CSS bases or reset to the default style.
-- **Module Synchronization** – The `waw sync` command fetches and updates modules from their repositories based on `module.json`.
-- **PM2 Integration** – Ensures process scaling, monitoring, and uptime management when running waw-based applications.
-- **wjst Front-End Templates** – A collection of server-side templates available under `/wjst/name`, providing reusable components such as:
-  - `alert`
-  - `controls`
-  - `core`
-  - `dom`
-  - `event`
-  - `spinner`
+---
 
-## Getting Started
+## What Core Provides
 
-### 1. Install waw-core
+### Runtime helpers (router-side)
+Loaded by `server/core/index.js`:
 
-waw-core is not installed via npm. Instead, use the waw command:
+- `waw.exe(command, cb)` — async shell execution wrapper
+- `waw.wait(ms)` — Promise-based delay helper
+- `waw.http(hostname, port)` — minimal HTTP client wrapper (get/post/put/patch/delete)
+- `waw.clearCache(query)` / `waw.clearBag(bag)` — small cache invalidation helpers
 
-```sh
-waw add waw-core
+> These helpers are kept for backwards compatibility and convenience across modules.
+
+---
+
+## CLI Commands
+
+Implemented by `server/core/runner.js` and utilities:
+
+### `waw new <name> [repo|number] [branch]`
+Create a new project from a template repository.
+
+### `waw add <module>`
+Generate/add a new module using the core module generator (`server/core/module/default`).
+
+### `waw css`
+Switch CSS base/framework for supported templates.
+
+### `waw sync ["commit message"] [branch]`
+Synchronize module folders based on their `module.json` repositories.
+
+### `waw git store <key>` / `waw git restore <key>`
+Store/restore `.git` folders into a global `.repos` storage inside the framework root.
+
+### `waw start` / `waw stop` / `waw restart`
+Process management via PM2.
+
+### `waw --version` / `waw -v` / `waw version`
+Display installed framework version and accessible modules.
+
+---
+
+## Structure
+
 ```
 
-### 2. Initialize a New Project
+server/core/
+├── index.js            # Loads runtime helpers onto `waw`
+├── runner.js           # CLI router (thin dispatcher)
+├── util.*.js           # CLI and runtime utilities
+├── module/
+│   └── default/        # Default module generator template
+└── module.json         # waw module manifest
 
-```sh
-waw new my-project
-cd my-project
 ```
 
-### 3. Add Modules as Needed
+---
 
-```sh
-waw add module-name
-```
+## Development Notes
 
-### 4. Synchronize Modules
+- Core aims to remain **stable** because many other modules rely on it.
+- Keep `runner.js` thin; put logic in `util.*.js`.
+- Maintain backward compatibility unless explicitly versioned.
 
-To fetch and update modules from their repositories, use:
+---
 
-```sh
-waw sync
-```
+## License
 
-### 5. Manage CSS
-
-To list available CSS frameworks or reset to default, run:
-
-```sh
-waw css
-```
-
-### Contributing
-
-We welcome contributions to enhance the functionality of `waw-core`. Please refer to the [CONTRIBUTING.md](https://github.com/WebArtWork/waw-core/blob/master/CONTRIBUTING.md) file for guidelines on how to contribute.
-
-For more details, visit the [waw-core GitHub repository](https://github.com/WebArtWork/waw-core).
+MIT © Web Art Work

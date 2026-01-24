@@ -1,31 +1,80 @@
 # Contributing to waw-core
 
-Thank you for your interest in contributing to waw-core! We welcome all contributions, including bug fixes, improvements, new features, and documentation updates.
+Thanks for contributing to **waw-core**.
 
-## How to Contribute
+Core is a foundational module: changes here affect many projects.
+Please prioritize **stability**, **backward compatibility**, and **clear behavior**.
 
-### 1. Reporting Issues
-- If you encounter a bug or have a feature request, please open an issue in the repository.
-- Clearly describe the problem, steps to reproduce, and any relevant logs or screenshots.
+---
 
-### 2. Submitting Pull Requests
-- Fork the repository and create a new branch for your changes.
-- Follow the existing coding style and conventions.
-- Write clear commit messages describing the changes made.
-- Ensure your changes do not introduce new bugs or break existing functionality.
-- Submit a pull request (PR) with a clear description of the updates.
+## Guiding Principles
 
-### 3. Contributing to Modules
-- waw-core manages modules that can be used globally or locally.
-- If improving a global module, update the corresponding repository.
-- If creating a new module, follow the waw module structure and submit it for review.
+- **Runner stays thin**
+  - `server/core/runner.js` should mostly export and dispatch.
+  - Put implementation into `util.*.js`.
 
-### 4. Syncing Modules
-- Use `waw sync` to fetch modules from GitHub if they are listed in `module.json`.
-- Ensure modules are properly linked and follow the naming conventions.
+- **Avoid breaking changes**
+  - If you must change behavior, document it clearly and keep migration easy.
 
-### 5. Code of Conduct
-- Be respectful and collaborative in discussions.
-- Maintain a professional and constructive attitude when reviewing contributions.
+- **Keep utilities attached to `waw`**
+  - Core exposes helpers (exe/wait/http/cache) through the global `waw` object.
 
-Your contributions help make waw-core better, and we appreciate your support!
+- **Cross-platform friendly**
+  - Prefer Node APIs (`fs.rmSync`, `fs.cpSync`) over shell-only commands.
+  - If shell is required, quote paths and provide fallbacks.
+
+---
+
+## What You Can Contribute
+
+### Bug fixes
+- CLI flows (`new`, `add`, `sync`, `css`)
+- Git/PM2 helpers
+- Safety and error handling
+
+### Improvements
+- Better defaults, clearer messages
+- Refactors that keep behavior identical
+- Documentation improvements
+
+### Documentation
+- Usage examples
+- Module lifecycle explanation
+- CLI reference
+
+---
+
+## Development Workflow
+
+1. Fork the repository
+2. Create a branch for your change
+3. Follow existing style:
+   - Tabs
+   - 4-space tab width
+4. Test changes in a real waw project
+5. Submit a pull request with:
+   - Description of the change
+   - Reason for the change
+   - Notes on backward compatibility
+
+---
+
+## Testing Checklist
+
+- `waw new` creates projects correctly (repo selection + branch)
+- `waw add` creates modules using the generator
+- `waw css` switches frameworks correctly for each project type
+- `waw sync` works both in fetch mode and commit mode
+- `waw --version` prints version and modules
+- PM2 commands operate correctly (`start/stop/restart`)
+- Git store/restore works across OS paths
+
+---
+
+## Communication
+
+- Be respectful and constructive
+- Explain *why* a change is needed
+- Assume others depend on core in production
+
+Thanks for helping keep waw stable and scalable.
