@@ -10,14 +10,14 @@ Please prioritize **stability**, **backward compatibility**, and **clear behavio
 ## Guiding Principles
 
 - **Runner stays thin**
-  - `server/core/runner.js` should mostly export and dispatch.
+  - `server/core/cli.js` should mostly export and dispatch.
   - Put implementation into `util.*.js`.
 
 - **Avoid breaking changes**
   - If you must change behavior, document it clearly and keep migration easy.
 
-- **Keep utilities attached to `waw`**
-  - Core exposes helpers (exe/wait/http/cache) through the global `waw` object.
+- **Keep runtime utilities attached to `waw`**
+  - Core exposes small helpers through the global `waw` object (see `util.runtime.js`).
 
 - **Cross-platform friendly**
   - Prefer Node APIs (`fs.rmSync`, `fs.cpSync`) over shell-only commands.
@@ -67,7 +67,6 @@ Please prioritize **stability**, **backward compatibility**, and **clear behavio
 - `waw sync` works both in fetch mode and commit mode
 - `waw --version` prints version and modules
 - PM2 commands operate correctly (`start/stop/restart`)
-- Git store/restore works across OS paths
 
 ---
 

@@ -2,10 +2,7 @@
 	"repo": "git@github.com:WebArtWork/waw-core.git",
 	"name": "Core",
 	"before": "*",
-	"runner": "runner.js",
-	"router": "index.js",
 	"dependencies": {
-		"node-fetch": "2",
 		"pm2": "6.0.14"
 	}
 }

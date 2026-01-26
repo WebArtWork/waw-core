@@ -1,7 +1,11 @@
-const fetch = require("node-fetch");
-
+// server/core/util.runtime.js
 module.exports = function (waw) {
-	/* Http Management */
+	// wait
+	waw.wait = async (time) => {
+		return await new Promise((resolve) => setTimeout(resolve, time));
+	};
+
+	// http
 	waw.http = function (hostname, port = 443) {
 		const post = (method) => {
 			return async function (path, body, callback) {
@@ -18,11 +22,11 @@ module.exports = function (waw) {
 					if (!response.ok) {
 						callback(false);
 						return false;
-					} else {
-						const resp = await response.json();
-						callback(resp);
-						return resp;
 					}
+
+					const resp = await response.json();
+					callback(resp);
+					return resp;
 				} catch (error) {
 					callback(false);
 					return false;
@@ -42,17 +46,17 @@ module.exports = function (waw) {
 					if (!response.ok) {
 						callback(false);
 						return false;
+					}
+
+					const contentType = response.headers.get("content-type");
+					if (contentType && contentType.includes("application/json")) {
+						const resp = await response.json();
+						callback(resp);
+						return resp;
 					} else {
-						const contentType = response.headers.get("content-type");
-						if (contentType && contentType.includes("application/json")) {
-							const resp = await response.json();
-							callback(resp);
-							return resp;
-						} else {
-							const resp = await response.text();
-							callback(resp);
-							return resp;
-						}
+						const resp = await response.text();
+						callback(resp);
+						return resp;
 					}
 				} catch (error) {
 					callback(false);
