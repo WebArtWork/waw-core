@@ -1,46 +1,31 @@
-const path = require("path");
-const fs = require("fs");
+const path = require("node:path");
+const fs = require("node:fs");
+const terminal = require('./util.terminal');
+const git = require('./util.git');
 
 /**
  * Repo lists (moved from runner)
  */
 const repo_list = {
-	"1) waw Angular": "https://github.com/WebArtWork/ngx-default.git",
-	"2) waw Vue": "https://github.com/WebArtWork/vue-default.git",
-	"3) waw React": "https://github.com/WebArtWork/react-default.git",
-	"4) waw Wjst": "https://github.com/WebArtWork/wjst-default.git",
-	"5) waw Server": "https://github.com/WebArtWork/waw-default.git",
-	"6) waw Unity": "https://github.com/WebArtWork/unity-default.git",
-	"7) waw Server + Angular + Wjst": "https://github.com/WebArtWork/ngx-platform.git",
-	"8) waw Server + Vue + Wjst": "https://github.com/WebArtWork/vue-platform.git",
-	"9) waw Server + React + Wjst": "https://github.com/WebArtWork/react-platform.git",
-	"10) IT Kamianets": "itkp",
-	// "10) waw Startup": "startup",
+	"waw Server": "https://github.com/WebArtWork/waw-default.git",
+	"waw Angular": "https://github.com/WebArtWork/ngx-default.git",
+	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
+	"waw React": "https://github.com/WebArtWork/react-default.git",
+	"waw Unity": "https://github.com/WebArtWork/unity-default.git",
+	"waw Server + Angular": "https://github.com/WebArtWork/ngx-platform.git",
+	"waw Server + Vue": "https://github.com/WebArtWork/vue-platform.git",
+	"waw Server + React": "https://github.com/WebArtWork/react-platform.git",
+	"IT Kamianets": "itkp",
 };
 
 const itkp = {
 	"1) Angular": "git@github.com:IT-Kamianets/ngx-default.git",
 };
 
-const repo_startup_list = {
-	"1) Real Estate": "git@github.com:WebArtWork/startup-realestate.git",
-	"2) Car": "git@github.com:WebArtWork/startup-car.git",
-	"3) Medicine": "git@github.com:WebArtWork/startup-medicine.git",
-	"4) Food": "git@github.com:WebArtWork/startup-food.git",
-	"5) Body": "git@github.com:WebArtWork/startup-body.git",
-	"6) Clothes": "git@github.com:WebArtWork/startup-clothes.git",
-	"7) Electronics": "git@github.com:WebArtWork/startup-electronics.git",
-	"8) City": "git@github.com:WebArtWork/startup-city.git",
-	"9) Agro": "git@github.com:WebArtWork/startup-agro.git",
-	"10) Cybersport": "git@github.com:WebArtWork/startup-cybersport.git",
-	// "3) Animals": "git@github.com:WebArtWork/startup-animals.git",
-	// "12) Content": "git@github.com:WebArtWork/startup-content.git",
-};
-
 /**
  * Create new project (moved from runner)
  */
-const new_project = function (waw) {
+const new_project = async function (waw) {
 	// Keep original behavior: allow running via `waw new ...`
 	if (waw.argv[0] === "new") {
 		waw.argv.shift();
@@ -50,39 +35,39 @@ const new_project = function (waw) {
 		waw.new_project = {};
 	}
 
-	// 1) name
+	// 1) name (terminal-based, no readline callbacks)
 	if (!waw.new_project.name) {
+		const t = terminal();
+
+		// argv wins if present
 		if (waw.argv.length) {
-			if (fs.existsSync(process.cwd() + "/" + waw.argv[0])) {
-				console.log("This project already exists in current directory");
-				process.exit(0);
-			} else {
-				waw.new_project.name = waw.argv[0];
-			}
+			const proposed = String(waw.argv[0]).trim();
+
+			waw.new_project.name = proposed;
+
+			t.close();
 		} else {
-			return waw.readline.question(
-				"Provide name for the project you want to create: ",
-				function (answer) {
-					if (answer) {
-						if (fs.existsSync(process.cwd() + "/" + answer)) {
-							console.log("This project already exists in current directory");
-						} else {
-							waw.new_project.name = answer;
-						}
-					} else {
-						console.log("Please type your project name");
-					}
-					new_project(waw);
-				}
-			);
+			const name = await t.ask("Provide name for the project you want to create:", {
+				required: true,
+			});
+
+			waw.new_project.name = name;
+			t.close();
 		}
+	}
+
+	if (fs.existsSync(path.join(process.cwd(), waw.new_project.name))) {
+		console.log("This project already exists in current directory");
+		process.exit(0);
 	}
 
 	// 2) repo
 	if (!waw.new_project.repo) {
+		const t = terminal();
 		// explicit repo passed as 2nd arg (non-number) like: waw new myapp <repoUrl>
 		if (waw.argv.length > 1 && waw.argv[1] != Number(waw.argv[1])) {
 			waw.new_project.repo = waw.argv[1];
+			t.close();
 		} else {
 			let text = "Which project you want to start with?",
 				counter = 0,
@@ -101,72 +86,75 @@ const new_project = function (waw) {
 			) {
 				waw.new_project.repo = repos[parseInt(waw.argv[1])];
 			} else {
-				text += "\nChoose number: ";
-				return waw.readline.question(text, function (answer) {
-					if (!answer || !repos[parseInt(answer)]) return new_project(waw);
+				// build menu in order
+				const mainLabels = Object.keys(repo_list);
+				const mainValues = Object.values(repo_list);
 
-					if (repos[parseInt(answer)] === "startup") {
-						(text = "Which startup theme you want to start with?"),
-							(counter = 0),
-							(repos = {});
+				// numeric selection passed as 2nd arg like: waw new myapp 3
+				if (
+					waw.argv.length > 1 &&
+					waw.argv[1] == Number(waw.argv[1]) &&
+					mainValues.length >= Number(waw.argv[1])
+				) {
+					waw.new_project.repo = mainValues[Number(waw.argv[1]) - 1];
+					t.close();
+				} else {
+					let selected = await t.choose("Which project you want to start with?", mainLabels, {
+						prompt: "Choose number:",
+					});
 
-						for (let key in repo_startup_list) {
-							repos[++counter] = repo_startup_list[key];
-							text += "\n" + key;
-						}
-						text += "\nChoose number: ";
+					// map selected label -> repo value
+					selected = mainValues[mainLabels.indexOf(selected)];
 
-						return waw.readline.question(text, function (answer) {
-							if (!answer || !repos[parseInt(answer)]) return new_project(waw);
-							waw.new_project.repo = repos[parseInt(answer)];
-							new_project(waw);
+					// nested selection: IT Kamianets
+					if (selected === "itkp") {
+						const labels = Object.keys(itkp);
+						const values = Object.values(itkp);
+
+						const picked = await t.choose("Which project you want to start with?", labels, {
+							prompt: "Choose number:",
 						});
-					} else if (repos[parseInt(answer)] === "itkp") {
-						(text = "Which project you want to start with?"),
-							(counter = 0),
-							(repos = {});
 
-						for (let key in itkp) {
-							repos[++counter] = itkp[key];
-							text += "\n" + key;
-						}
-						text += "\nChoose number: ";
-
-						return waw.readline.question(text, function (answer) {
-							if (!answer || !repos[parseInt(answer)]) return new_project(waw);
-							waw.new_project.repo = repos[parseInt(answer)];
-							new_project(waw);
-						});
+						waw.new_project.repo = values[labels.indexOf(picked)];
+						t.close();
 					} else {
-						waw.new_project.repo = repos[parseInt(answer)];
-						new_project(waw);
+						// plain selection
+						waw.new_project.repo = selected;
+						t.close();
 					}
-				});
+				}
 			}
 		}
 	}
 
-	// 3) fetch into folder
-	let folder = process.cwd() + "/" + waw.new_project.name;
+	// 3) fetch into folder (git-based)
+	const branch = waw.argv.length > 2 ? waw.argv[2] : "master";
+	const folder = path.join(process.cwd(), waw.new_project.name);
+
 	fs.mkdirSync(folder, { recursive: true });
 
-	waw.fetch(
-		folder,
-		waw.new_project.repo,
-		() => {
-			if (fs.existsSync(folder + "/.git")) {
-				fs.rmSync(folder + "/.git", { recursive: true });
-			}
+	try {
+		const t = terminal();
+		t.spinnerStart("Downloading template...");
 
-			if (fs.existsSync(folder + "/.github")) {
-				fs.rmSync(folder + "/.github", { recursive: true });
-			}
+		// clone/sync repo into target folder (silent)
+		git.forceSync(folder, { repo: waw.new_project.repo, branch, silent: true });
 
-			console.log("Your project has been generated successfully");
-			process.exit();
-		},
-		waw.argv.length > 2 ? waw.argv[2] : "master"
-	);
+		// keep generated project clean
+		git.remove(folder);
+
+		// also drop github workflows from templates
+		const gh = path.join(folder, ".github");
+		if (fs.existsSync(gh)) fs.rmSync(gh, { recursive: true, force: true });
+
+		t.close();
+		console.log("Your project has been generated successfully");
+		process.exit(0);
+	} catch (e) {
+		console.error("Failed to generate project");
+		process.exit(1);
+	}
+
 };
 
 module.exports.new_project = new_project;
@@ -285,10 +273,10 @@ const change_css = function (waw) {
 		const list = isAngular
 			? css_ngx_list
 			: isReact
-			? css_react_list
-			: isVue
-			? css_vue_list
-			: css_wjst_list;
+				? css_react_list
+				: isVue
+					? css_vue_list
+					: css_wjst_list;
 
 		let text = "Which framework you want to use?",
 			counter = 0,

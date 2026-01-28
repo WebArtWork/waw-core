@@ -21,7 +21,7 @@ module.exports.n = scaffold.new_project;
 module.exports.css = scaffold.change_css;
 
 /*
- *	Version Management
+ *	Version management
  */
 module.exports["--version"] = maintain.version;
 module.exports["-version"] = maintain.version;
@@ -32,7 +32,7 @@ module.exports.ver = maintain.version;
 module.exports.v = maintain.version;
 
 /*
- *	Modules Management
+ *	Modules management
  */
 module.exports.add = scaffold.new_module;
 module.exports.a = scaffold.new_module;
