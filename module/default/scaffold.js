@@ -1,48 +1,25 @@
-const path = require("path");
-const fs = require("fs");
-
 module.exports = async function (waw) {
-	fs.mkdirSync(waw.base, { recursive: true });
+	waw.ensureDir(waw.base);
 
-	const response = await fetch(
-		"https://webart.work/api/registry/waw/module/" + waw.name
-	);
-	let resp;
-	if (response.ok) {
-		resp = await response.json();
+	const createLocal = () => {
+		waw.readWrite(waw.template + "/index.js", waw.base + `/index.js`, {
+			CNAME: waw.Name,
+			NAME: waw.name,
+		});
+
+		waw.readWrite(waw.template + "/module.json", waw.base + `/module.json`, {
+			CNAME: waw.Name,
+			NAME: waw.name,
+		});
 	}
 
-	if (response.ok && resp) {
-		if (resp.repo) {
-			waw.fetch(
-				waw.base,
-				resp.repo,
-				(err) => {},
-				resp.branch || "master"
-			);
-		} else {
-			for (const file in resp.files) {
-				if (file)
-					fs.writeFileSync(
-						path.join(waw.base, file),
-						resp.files[file],
-						"utf8"
-					);
-			}
+	if (waw.name.startsWith('waw-')) {
+		try {
+			waw.git.forceSync(waw.base, { repo: `https://github.com/WebArtWork/${waw.name}.git`, branch: 'master', silent: true });
+		} catch (e) {
+			createLocal();
 		}
 	} else {
-		let file = fs.readFileSync(waw.template + "/index.js", "utf8");
-		file = file.split("CNAME").join(waw.Name);
-		file = file.split("NAME").join(waw.name);
-		fs.writeFileSync(waw.base + `/${waw.name}.api.js`, file, "utf8");
-
-		file = fs.readFileSync(waw.template + "/module.json", "utf8");
-		file = file.split("CNAME").join(waw.Name);
-		file = file.split("NAME").join(waw.name);
-		fs.writeFileSync(waw.base + "/module.json", file, "utf8");
+		createLocal();
 	}
-
-	console.log("Module has been created");
-
-	process.exit(1);
 };

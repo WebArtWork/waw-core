@@ -121,19 +121,8 @@ module.exports.sync = function sync(waw) {
 const version = function (waw) {
 	let logs = "";
 
-	if (fs.existsSync(waw.waw_root + "/package.json")) {
-		try {
-			let config = JSON.parse(fs.readFileSync(waw.waw_root + "/package.json"));
-			if (config.version) {
-				logs = "waw: " + config.version;
-			} else {
-				console.log("Missing files, try to reinstall waw framework.");
-				process.exit(1);
-			}
-		} catch (err) {
-			console.log("Missing files, try to reinstall waw framework.");
-			process.exit(1);
-		}
+	if (waw.exists(waw.wawPath + "/package.json")) {
+		logs = "waw: " + waw.readJson(waw.wawPath + "/package.json").version;
 	}
 
 	if (waw.modules && waw.modules.length) {
@@ -148,7 +137,7 @@ const version = function (waw) {
 	}
 
 	console.log(logs);
-	process.exit(0);
+	process.exit();
 };
 
 module.exports.version = version;

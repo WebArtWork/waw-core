@@ -1,5 +1,5 @@
-const path = require("node:path");
 const fs = require("node:fs");
+const path = require("node:path");
 const terminal = require('./util.terminal');
 const git = require('./util.git');
 
@@ -9,41 +9,41 @@ const git = require('./util.git');
 const repo_list = {
 	"waw Server": "https://github.com/WebArtWork/waw-default.git",
 	"waw Angular": "https://github.com/WebArtWork/ngx-default.git",
-	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
 	"waw React": "https://github.com/WebArtWork/react-default.git",
+	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
 	"waw Unity": "https://github.com/WebArtWork/unity-default.git",
 	"waw Server + Angular": "https://github.com/WebArtWork/ngx-platform.git",
-	"waw Server + Vue": "https://github.com/WebArtWork/vue-platform.git",
 	"waw Server + React": "https://github.com/WebArtWork/react-platform.git",
+	"waw Server + Vue": "https://github.com/WebArtWork/vue-platform.git",
 	"IT Kamianets": "itkp",
 };
 
 const itkp = {
-	"1) Angular": "git@github.com:IT-Kamianets/ngx-default.git",
+	"Angular": "git@github.com:IT-Kamianets/ngx-default.git",
 };
 
 /**
  * Create new project (moved from runner)
  */
-const new_project = async function (waw) {
+const newProject = async function (waw) {
 	// Keep original behavior: allow running via `waw new ...`
 	if (waw.argv[0] === "new") {
 		waw.argv.shift();
 	}
 
-	if (!waw.new_project) {
-		waw.new_project = {};
+	if (!waw.newProject) {
+		waw.newProject = {};
 	}
 
 	// 1) name (terminal-based, no readline callbacks)
-	if (!waw.new_project.name) {
+	if (!waw.newProject.name) {
 		const t = terminal();
 
 		// argv wins if present
 		if (waw.argv.length) {
 			const proposed = String(waw.argv[0]).trim();
 
-			waw.new_project.name = proposed;
+			waw.newProject.name = proposed;
 
 			t.close();
 		} else {
@@ -51,22 +51,22 @@ const new_project = async function (waw) {
 				required: true,
 			});
 
-			waw.new_project.name = name;
+			waw.newProject.name = name;
 			t.close();
 		}
 	}
 
-	if (fs.existsSync(path.join(process.cwd(), waw.new_project.name))) {
+	if (fs.existsSync(path.join(process.cwd(), waw.newProject.name))) {
 		console.log("This project already exists in current directory");
-		process.exit(0);
+		process.exit(1);
 	}
 
 	// 2) repo
-	if (!waw.new_project.repo) {
+	if (!waw.newProject.repo) {
 		const t = terminal();
 		// explicit repo passed as 2nd arg (non-number) like: waw new myapp <repoUrl>
 		if (waw.argv.length > 1 && waw.argv[1] != Number(waw.argv[1])) {
-			waw.new_project.repo = waw.argv[1];
+			waw.newProject.repo = waw.argv[1];
 			t.close();
 		} else {
 			let text = "Which project you want to start with?",
@@ -84,7 +84,7 @@ const new_project = async function (waw) {
 				waw.argv[1] == Number(waw.argv[1]) &&
 				Object.keys(repos).length >= Number(waw.argv[1])
 			) {
-				waw.new_project.repo = repos[parseInt(waw.argv[1])];
+				waw.newProject.repo = repos[parseInt(waw.argv[1])];
 			} else {
 				// build menu in order
 				const mainLabels = Object.keys(repo_list);
@@ -96,7 +96,7 @@ const new_project = async function (waw) {
 					waw.argv[1] == Number(waw.argv[1]) &&
 					mainValues.length >= Number(waw.argv[1])
 				) {
-					waw.new_project.repo = mainValues[Number(waw.argv[1]) - 1];
+					waw.newProject.repo = mainValues[Number(waw.argv[1]) - 1];
 					t.close();
 				} else {
 					let selected = await t.choose("Which project you want to start with?", mainLabels, {
@@ -115,11 +115,11 @@ const new_project = async function (waw) {
 							prompt: "Choose number:",
 						});
 
-						waw.new_project.repo = values[labels.indexOf(picked)];
+						waw.newProject.repo = values[labels.indexOf(picked)];
 						t.close();
 					} else {
 						// plain selection
-						waw.new_project.repo = selected;
+						waw.newProject.repo = selected;
 						t.close();
 					}
 				}
@@ -129,7 +129,7 @@ const new_project = async function (waw) {
 
 	// 3) fetch into folder (git-based)
 	const branch = waw.argv.length > 2 ? waw.argv[2] : "master";
-	const folder = path.join(process.cwd(), waw.new_project.name);
+	const folder = path.join(process.cwd(), waw.newProject.name);
 
 	fs.mkdirSync(folder, { recursive: true });
 
@@ -138,7 +138,7 @@ const new_project = async function (waw) {
 		t.spinnerStart("Downloading template...");
 
 		// clone/sync repo into target folder (silent)
-		git.forceSync(folder, { repo: waw.new_project.repo, branch, silent: true });
+		git.forceSync(folder, { repo: waw.newProject.repo, branch, silent: true });
 
 		// keep generated project clean
 		git.remove(folder);
@@ -149,7 +149,7 @@ const new_project = async function (waw) {
 
 		t.close();
 		console.log("Your project has been generated successfully");
-		process.exit(0);
+		process.exit();
 	} catch (e) {
 		console.error("Failed to generate project");
 		process.exit(1);
@@ -157,7 +157,7 @@ const new_project = async function (waw) {
 
 };
 
-module.exports.new_project = new_project;
+module.exports.newProject = newProject;
 
 
 /*
@@ -165,34 +165,70 @@ module.exports.new_project = new_project;
  */
 const defaults = {
 	module: {
-		default: __dirname + "/module/default",
+		default: path.join(__dirname, "module", "default"),
 	},
 };
 
-const new_module = function (waw) {
-	waw.server = typeof waw.server === "string" ? waw.server : "server";
+module.exports.newModule = async function newModule(waw) {
+	const t = terminal();
 
-	if (!waw.path) {
-		if (
-			waw.ensure(
-				process.cwd() + (waw.server ? "/" : ""),
-				waw.server,
-				"Module already exists",
-				false
-			)
-		) {
-			return;
-		}
+	let name = null;
+	if (waw.argv && (waw.argv[0] === "add" || waw.argv[0] === "a"))
+		name = waw.argv[1];
+	else name = waw.argv && waw.argv[0];
+
+	if (!name) name = await t.ask("Module name:", { required: true });
+
+	name = name.toLowerCase();
+
+	const base = path.join(waw.modulesPath, name);
+	if (waw.isDir(base)) {
+		console.log("Module already exists");
+		t.close();
+		process.exit(1);
 	}
 
-	if (!waw.template) {
-		return waw.read_customization(defaults, "module", () => new_module(waw));
+	// TODO implement custom template
+	let templatePath = defaults.module.default;
+
+	const scaffoldPath = path.join(templatePath, "scaffold.js");
+	if (!waw.isFile(scaffoldPath)) {
+		console.log(`Missing scaffold.js in template: ${templatePath}`);
+		t.close();
+		process.exit(1);
 	}
 
-	require(waw.template + "/scaffold.js")(waw);
+	const scaffold = require(scaffoldPath);
+	if (typeof scaffold !== "function") {
+		console.log(`Template scaffold.js must export a function: ${scaffoldPath}`);
+		t.close();
+		process.exit(1);
+	}
+
+	const ctx = {
+		...waw,
+		git,
+		// template inputs
+		name,
+		Name: name.charAt(0).toUpperCase() + name.slice(1),
+
+		// paths
+		base, // target module folder
+		template: templatePath, // template root folder
+		projectPath: waw.projectPath,
+	};
+
+	try {
+		await scaffold(ctx);
+		console.log("Module has been created");
+		t.close();
+		process.exit();
+	} catch (e) {
+		console.log("Failed to create module");
+		t.close();
+		process.exit(1);
+	}
 };
-
-module.exports.new_module = new_module;
 
 
 /*
@@ -256,7 +292,7 @@ const detectProjectType = () => {
 	};
 };
 
-const change_css = function (waw) {
+const changeCss = function (waw) {
 	ensureWjstConfig();
 	const { isAngular, isReact, isVue, isWjst } = detectProjectType();
 
@@ -265,11 +301,11 @@ const change_css = function (waw) {
 		process.exit();
 	}
 
-	if (!waw.change_css) {
-		waw.change_css = {};
+	if (!waw.changeCss) {
+		waw.changeCss = {};
 	}
 
-	if (!waw.change_css.repo) {
+	if (!waw.changeCss.repo) {
 		const list = isAngular
 			? css_ngx_list
 			: isReact
@@ -290,9 +326,9 @@ const change_css = function (waw) {
 		text += "\nChoose number: ";
 
 		return waw.readline.question(text, function (answer) {
-			if (!answer || !repos[parseInt(answer)]) return change_css(waw);
-			waw.change_css.repo = repos[parseInt(answer)];
-			change_css(waw);
+			if (!answer || !repos[parseInt(answer)]) return changeCss(waw);
+			waw.changeCss.repo = repos[parseInt(answer)];
+			changeCss(waw);
 		});
 	}
 
@@ -307,7 +343,7 @@ const change_css = function (waw) {
 
 	waw.fetch(
 		folder,
-		waw.change_css.repo,
+		waw.changeCss.repo,
 		() => {
 			if (fs.existsSync(folder + "/.git")) {
 				fs.rmSync(folder + "/.git", { recursive: true });
@@ -319,4 +355,4 @@ const change_css = function (waw) {
 	);
 };
 
-module.exports.change_css = change_css;
+module.exports.changeCss = changeCss;

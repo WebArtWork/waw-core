@@ -11,14 +11,19 @@ const maintain = require("./util.maintain");
  *	Create new project
  */
 
-module.exports.new = scaffold.new_project;
-module.exports.n = scaffold.new_project;
+module.exports.new = scaffold.newProject;
+module.exports.n = scaffold.newProject;
 
+/*
+ *	Modules management
+ */
+module.exports.add = scaffold.newModule;
+module.exports.a = scaffold.newModule;
 
 /*
  *	Update css folder
  */
-module.exports.css = scaffold.change_css;
+module.exports.css = scaffold.changeCss;
 
 /*
  *	Version management
@@ -31,11 +36,6 @@ module.exports.version = maintain.version;
 module.exports.ver = maintain.version;
 module.exports.v = maintain.version;
 
-/*
- *	Modules management
- */
-module.exports.add = scaffold.new_module;
-module.exports.a = scaffold.new_module;
 
 /*
  *	Sync management
