@@ -6,7 +6,7 @@ const git = require('./util.git');
 /**
  * Repo lists (moved from runner)
  */
-const repo_list = {
+const projectRepoList = {
 	"waw Server": "https://github.com/WebArtWork/waw-default.git",
 	"waw Angular": "https://github.com/WebArtWork/ngx-default.git",
 	"waw React": "https://github.com/WebArtWork/react-default.git",
@@ -25,15 +25,13 @@ const itkp = {
 /**
  * Create new project (moved from runner)
  */
-const newProject = async function (waw) {
-	// Keep original behavior: allow running via `waw new ...`
+
+module.exports.newProject = async function (waw) {
 	if (waw.argv[0] === "new") {
 		waw.argv.shift();
 	}
 
-	if (!waw.newProject) {
-		waw.newProject = {};
-	}
+	waw.newProject ||= {};
 
 	// 1) name (terminal-based, no readline callbacks)
 	if (!waw.newProject.name) {
@@ -73,8 +71,8 @@ const newProject = async function (waw) {
 				counter = 0,
 				repos = {};
 
-			for (let key in repo_list) {
-				repos[++counter] = repo_list[key];
+			for (let key in projectRepoList) {
+				repos[++counter] = projectRepoList[key];
 				text += "\n" + key;
 			}
 
@@ -87,8 +85,8 @@ const newProject = async function (waw) {
 				waw.newProject.repo = repos[parseInt(waw.argv[1])];
 			} else {
 				// build menu in order
-				const mainLabels = Object.keys(repo_list);
-				const mainValues = Object.values(repo_list);
+				const mainLabels = Object.keys(projectRepoList);
+				const mainValues = Object.values(projectRepoList);
 
 				// numeric selection passed as 2nd arg like: waw new myapp 3
 				if (
@@ -156,8 +154,6 @@ const newProject = async function (waw) {
 	}
 
 };
-
-module.exports.newProject = newProject;
 
 
 /*
@@ -234,125 +230,75 @@ module.exports.newModule = async function newModule(waw) {
 /*
  *	Update css folder
  */
-const css_ngx_list = {
-	"1) Basic": "https://github.com/WebArtWork/ngx-css.git",
-	"2) Bootstrap": "https://github.com/WebArtWork/ngx-cssBootstrap.git",
-	"3) Tailwind": "https://github.com/WebArtWork/ngx-cssTailwind.git",
-	"4) Foundation": "https://github.com/WebArtWork/ngx-cssFoundation.git",
-	"5) Bulma": "https://github.com/WebArtWork/ngx-cssBulma.git",
-	"6) Skeleton": "https://github.com/WebArtWork/ngx-cssSkeleton.git",
-};
-
-const css_react_list = {
-	"1) Basic": "https://github.com/WebArtWork/react-css.git",
-	"2) Bootstrap": "https://github.com/WebArtWork/react-cssBootstrap.git",
-	"3) Tailwind": "https://github.com/WebArtWork/react-cssTailwind.git",
-	"4) Foundation": "https://github.com/WebArtWork/react-cssFoundation.git",
-	"5) Bulma": "https://github.com/WebArtWork/react-cssBulma.git",
-	"6) Skeleton": "https://github.com/WebArtWork/react-cssSkeleton.git",
-};
-
-const css_vue_list = {
-	"1) Basic": "https://github.com/WebArtWork/vue-css.git",
-	"2) Bootstrap": "https://github.com/WebArtWork/vue-cssBootstrap.git",
-	"3) Tailwind": "https://github.com/WebArtWork/vue-cssTailwind.git",
-	"4) Foundation": "https://github.com/WebArtWork/vue-cssFoundation.git",
-	"5) Bulma": "https://github.com/WebArtWork/vue-cssBulma.git",
-	"6) Skeleton": "https://github.com/WebArtWork/vue-cssSkeleton.git",
-};
-
-const css_wjst_list = {
-	"1) Basic": "https://github.com/WebArtWork/wjst-css.git",
-	"2) Bootstrap": "https://github.com/WebArtWork/wjst-cssBootstrap.git",
-	"3) Tailwind": "https://github.com/WebArtWork/wjst-cssTailwind.git",
-	"4) Foundation": "https://github.com/WebArtWork/wjst-cssFoundation.git",
-	"5) Bulma": "https://github.com/WebArtWork/wjst-cssBulma.git",
-	"6) Skeleton": "https://github.com/WebArtWork/wjst-cssSkeleton.git",
-};
-
-const ensureWjstConfig = () => {
-	// Keep original behavior: if template.json exists but wjst.json missing -> copy
-	const templateJson = path.join(process.cwd(), "template.json");
-	const wjstJson = path.join(process.cwd(), "wjst.json");
-
-	if (fs.existsSync(templateJson) && !fs.existsSync(wjstJson)) {
-		fs.copyFileSync(templateJson, wjstJson);
+const cssRepoList = {
+	angular: {
+		"Basic": "https://github.com/WebArtWork/ngx-css.git",
+		"Bootstrap": "https://github.com/WebArtWork/ngx-cssBootstrap.git",
+		"Tailwind": "https://github.com/WebArtWork/ngx-cssTailwind.git",
+		"Foundation": "https://github.com/WebArtWork/ngx-cssFoundation.git",
+		"Bulma": "https://github.com/WebArtWork/ngx-cssBulma.git",
+		"Material": "https://github.com/WebArtWork/ngx-cssMaterial.git",
+	},
+	react: {
+		"Basic": "https://github.com/WebArtWork/react-css.git",
+		"Bootstrap": "https://github.com/WebArtWork/react-cssBootstrap.git",
+		"Tailwind": "https://github.com/WebArtWork/react-cssTailwind.git",
+		"Foundation": "https://github.com/WebArtWork/react-cssFoundation.git",
+		"Bulma": "https://github.com/WebArtWork/react-cssBulma.git",
+	},
+	vue: {
+		"Basic": "https://github.com/WebArtWork/vue-css.git",
+		"Bootstrap": "https://github.com/WebArtWork/vue-cssBootstrap.git",
+		"Tailwind": "https://github.com/WebArtWork/vue-cssTailwind.git",
+		"Foundation": "https://github.com/WebArtWork/vue-cssFoundation.git",
+		"Bulma": "https://github.com/WebArtWork/vue-cssBulma.git",
+	},
+	wjst: {
+		"Basic": "https://github.com/WebArtWork/wjst-css.git",
+		"Bootstrap": "https://github.com/WebArtWork/wjst-cssBootstrap.git",
+		"Tailwind": "https://github.com/WebArtWork/wjst-cssTailwind.git",
+		"Foundation": "https://github.com/WebArtWork/wjst-cssFoundation.git",
+		"Bulma": "https://github.com/WebArtWork/wjst-cssBulma.git",
 	}
 };
 
-const detectProjectType = () => {
-	const cwd = process.cwd();
-	return {
-		isAngular: fs.existsSync(path.join(cwd, "angular.json")),
-		isReact: fs.existsSync(path.join(cwd, "react.json")),
-		isVue: fs.existsSync(path.join(cwd, "vue.json")),
-		isWjst:
-			fs.existsSync(path.join(cwd, "template.json")) ||
-			fs.existsSync(path.join(cwd, "wjst.json")),
-	};
-};
-
-const changeCss = function (waw) {
-	ensureWjstConfig();
-	const { isAngular, isReact, isVue, isWjst } = detectProjectType();
-
-	if (!isAngular && !isReact && !isVue && !isWjst) {
-		console.log("This is not an project with waw css");
+module.exports.changeCss = async function (waw) {
+	if (!waw.projectType || waw.projectType === 'waw') {
+		console.log("This is not an front-end project");
 		process.exit();
 	}
 
-	if (!waw.changeCss) {
-		waw.changeCss = {};
-	}
+	const t = terminal();
 
-	if (!waw.changeCss.repo) {
-		const list = isAngular
-			? css_ngx_list
-			: isReact
-				? css_react_list
-				: isVue
-					? css_vue_list
-					: css_wjst_list;
+	const repoList = cssRepoList[waw.projectType];
 
-		let text = "Which framework you want to use?",
-			counter = 0,
-			repos = {};
+	const mainLabels = Object.keys(repoList);
+	const mainValues = Object.values(repoList);
 
-		for (let key in list) {
-			repos[++counter] = list[key];
-			text += "\n" + key;
-		}
-
-		text += "\nChoose number: ";
-
-		return waw.readline.question(text, function (answer) {
-			if (!answer || !repos[parseInt(answer)]) return changeCss(waw);
-			waw.changeCss.repo = repos[parseInt(answer)];
-			changeCss(waw);
+	let repoLink = '';
+	do {
+		const selected = await t.choose("Which css framework you want to use?", mainLabels, {
+			prompt: "Choose number:",
 		});
-	}
+
+		repoLink = mainValues[mainLabels.indexOf(selected)];
+	} while(!repoLink);
+
+	t.close();
 
 	const folder = path.join(
 		process.cwd(),
-		isAngular || isReact || isVue ? "src" : "css",
-		"scss"
+		waw.projectType === 'wjst' ? 'scss' : 'src/scss'
 	);
 
-	fs.rmSync(folder, { recursive: true, force: true });
-	fs.mkdirSync(folder, { recursive: true });
+	waw.rm(folder);
+	waw.ensureDir(folder);
+	git.forceSync(folder, {
+		repo: repoLink,
+		branch: 'master',
+		silent: true
+	});
 
-	waw.fetch(
-		folder,
-		waw.changeCss.repo,
-		() => {
-			if (fs.existsSync(folder + "/.git")) {
-				fs.rmSync(folder + "/.git", { recursive: true });
-			}
-			console.log("css Framework changed successfully");
-			process.exit(1);
-		},
-		waw.argv.length > 1 ? waw.argv[1] : "master"
-	);
+	console.log("css framework changed successfully");
+	process.exit();
 };
-
-module.exports.changeCss = changeCss;

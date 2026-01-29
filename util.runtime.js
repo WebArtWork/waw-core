@@ -1,4 +1,3 @@
-// server/core/util.runtime.js
 module.exports = function (waw) {
 	// wait
 	waw.wait = async (time) => {
