@@ -1,6 +1,5 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const terminal = require('./util.terminal');
 const git = require('./util.git');
 
 /**
@@ -12,9 +11,6 @@ const projectRepoList = {
 	"waw React": "https://github.com/WebArtWork/react-default.git",
 	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
 	"waw Unity": "https://github.com/WebArtWork/unity-default.git",
-	"waw Server + Angular": "https://github.com/WebArtWork/ngx-platform.git",
-	"waw Server + React": "https://github.com/WebArtWork/react-platform.git",
-	"waw Server + Vue": "https://github.com/WebArtWork/vue-platform.git",
 	"IT Kamianets": "itkp",
 };
 
@@ -37,7 +33,7 @@ module.exports.newProject = async function (waw) {
 
 	// 1) name (terminal-based, no readline callbacks)
 	if (!waw.newProject.name) {
-		const t = terminal();
+		const t = waw.terminal();
 
 		// argv wins if present
 		if (waw.argv.length) {
@@ -63,7 +59,7 @@ module.exports.newProject = async function (waw) {
 
 	// 2) repo
 	if (!waw.newProject.repo) {
-		const t = terminal();
+		const t = waw.terminal();
 		// explicit repo passed as 2nd arg (non-number) like: waw new myapp <repoUrl>
 		if (waw.argv.length > 1 && waw.argv[1] != Number(waw.argv[1])) {
 			waw.newProject.repo = waw.argv[1];
@@ -134,7 +130,7 @@ module.exports.newProject = async function (waw) {
 	fs.mkdirSync(folder, { recursive: true });
 
 	try {
-		const t = terminal();
+		const t = waw.terminal();
 		t.spinnerStart("Downloading template...");
 
 		// clone/sync repo into target folder (silent)
@@ -168,7 +164,7 @@ const defaults = {
 };
 
 module.exports.newModule = async function newModule(waw) {
-	const t = terminal();
+	const t = waw.terminal();
 
 	let name = null;
 	if (waw.argv && (waw.argv[0] === "add" || waw.argv[0] === "a"))
@@ -270,7 +266,7 @@ module.exports.changeCss = async function (waw) {
 		process.exit();
 	}
 
-	const t = terminal();
+	const t = waw.terminal();
 
 	const repoList = cssRepoList[waw.projectType];
 
