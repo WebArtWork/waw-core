@@ -19,7 +19,9 @@ const projectRepoList = {
 };
 
 const itkp = {
-	"Angular": "git@github.com:IT-Kamianets/ngx-default.git",
+	"Tailwind theme": "https://github.com/IT-Kamianets/theme-tailwind.git",
+	"Bootstrap theme": "https://github.com/IT-Kamianets/theme-bootstrap.git",
+	"Bulma theme": "https://github.com/IT-Kamianets/theme-bulma.git",
 };
 
 /**
