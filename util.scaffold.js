@@ -1,6 +1,5 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const git = require('./util.git');
 
 /**
  * Repo lists (moved from runner)
@@ -134,10 +133,10 @@ module.exports.newProject = async function (waw) {
 		t.spinnerStart("Downloading template...");
 
 		// clone/sync repo into target folder (silent)
-		git.forceSync(folder, { repo: waw.newProject.repo, branch, silent: true });
+		waw.git.forceSync(folder, { repo: waw.newProject.repo, branch, silent: true });
 
 		// keep generated project clean
-		git.remove(folder);
+		waw.git.remove(folder);
 
 		// also drop github workflows from templates
 		const gh = path.join(folder, ".github");
@@ -291,7 +290,7 @@ module.exports.changeCss = async function (waw) {
 
 	waw.rm(folder);
 	waw.ensureDir(folder);
-	git.forceSync(folder, {
+	waw.git.forceSync(folder, {
 		repo: repoLink,
 		branch: 'master',
 		silent: true

@@ -42,11 +42,6 @@ module.exports.v = maintain.version;
  */
 module.exports.sync = maintain.sync;
 
-/*
- *	GIT management
- */
-
-module.exports.git = require("./util.git");
 
 /*
  *	PM2 management

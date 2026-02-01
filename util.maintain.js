@@ -3,7 +3,6 @@
  */
 const fs = require("node:fs");
 const path = require("node:path");
-const git = require("./util.git");
 
 const j = (p) => {
 	try {
@@ -70,7 +69,7 @@ module.exports.sync = function sync(waw) {
 	// if called as `waw sync ...`, remove "sync" token if present
 	if (waw.argv[0] === "sync") waw.argv.shift();
 
-	if (!git.hasGit()) {
+	if (!waw.git.hasGit()) {
 		console.log("Git is not installed or not available in PATH");
 		process.exit(1);
 	}
@@ -88,9 +87,9 @@ module.exports.sync = function sync(waw) {
 	if (!message) {
 		for (const m of modules) {
 			try {
-				git.forceSync(m.root, { repo: m.repo, branch });
+				waw.git.forceSync(m.root, { repo: m.repo, branch });
 				// keep modules clean
-				git.remove(m.root);
+				waw.git.remove(m.root);
 				console.log(`Module ${m.name} has been synchronized`);
 			} catch (e) {
 				console.log(`Module ${m.name} failed to synchronize`);
@@ -103,8 +102,8 @@ module.exports.sync = function sync(waw) {
 	// mode B: waw sync "MESSAGE" [branch] -> publish current folder state
 	for (const m of modules) {
 		try {
-			git.ensureHygiene(m.root);
-			git.publish(m.root, { repo: m.repo, branch, message });
+			waw.git.ensureHygiene(m.root);
+			waw.git.publish(m.root, { repo: m.repo, branch, message });
 			console.log(`Module ${m.name} has been updated`);
 		} catch (e) {
 			console.log(`Module ${m.name} failed to update`);
