@@ -14,7 +14,7 @@ const start = (waw) => {
 		pm2.start(
 			{
 				name: waw.config.name || waw.config.title || process.cwd(),
-				script: waw.waw_root + "/util.runtime.js",
+				script: waw.wawPath + "/util.runtime.js",
 				exec_mode: waw.config.pm2.exec_mode || "fork", // default fork
 				instances: waw.config.pm2.instances || 1,
 				max_memory_restart: waw.config.pm2.memory || "800M",

@@ -4,6 +4,22 @@ module.exports.love = function (waw) {
 	process.exit();
 };
 
+module.exports.wipe = function (waw) {
+	waw.rm(waw.wawPath, 'server');
+
+	process.exit();
+};
+
+module.exports.update = function (waw) {
+	waw.rm(waw.wawPath, 'server');
+
+	waw.git.forceSync(waw.wawPath, {
+		repo: 'https://github.com/WebArtWork/waw.git'
+	})
+
+	process.exit();
+};
+
 const scaffold = require("./util.scaffold");
 const maintain = require("./util.maintain");
 
