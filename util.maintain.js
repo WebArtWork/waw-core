@@ -122,7 +122,6 @@ const version = function (waw) {
 
 	console.log('waw location: ' + waw.wawPath);
 
-
 	if (waw.exists(waw.wawPath + "/package.json")) {
 		logs = "waw: " + waw.readJson(waw.wawPath + "/package.json").version;
 	}
