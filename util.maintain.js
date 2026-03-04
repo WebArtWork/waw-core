@@ -120,6 +120,9 @@ module.exports.sync = function sync(waw) {
 const version = function (waw) {
 	let logs = "";
 
+	console.log('waw location: ' + waw.wawPath);
+
+
 	if (waw.exists(waw.wawPath + "/package.json")) {
 		logs = "waw: " + waw.readJson(waw.wawPath + "/package.json").version;
 	}
