@@ -10,15 +10,53 @@ const projectRepoList = {
 	"waw React": "https://github.com/WebArtWork/react-default.git",
 	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
 	"waw Unity": "https://github.com/WebArtWork/unity-default.git",
-	"IT Kamianets": "itkp",
+	"IT Kamianets": "space.itkp",
+	"Ternopil Space": "space.ternopil",
+	"Uman IT Space": "space.uman",
+	"Volyn IT Space": "space.volyn",
+	"Vinnytsia Space": "space.vinnytsia",
+	"Frankivsk Space": "space.frankivsk",
+	"Chernivtsi Space": "space.chernivtsi",
+	"London IT Space": "space.london",
 };
 
-const itkp = {
-	"Angular default project": "https://github.com/IT-Kamianets/ngx-default.git",
-	"Tailwind theme": "https://github.com/IT-Kamianets/theme-tailwind.git",
-	"Bootstrap theme": "https://github.com/IT-Kamianets/theme-bootstrap.git",
-	"Bulma theme": "https://github.com/IT-Kamianets/theme-bulma.git",
-};
+const space = {
+	itkp: {
+		"Angular default project": "https://github.com/IT-Kamianets/ngx-default.git",
+		"Angular horeca project": "https://github.com/IT-Kamianets/ngx-horeca.git",
+		"Tailwind theme": "https://github.com/IT-Kamianets/theme-tailwind.git",
+		"Bootstrap theme": "https://github.com/IT-Kamianets/theme-bootstrap.git",
+		"Bulma theme": "https://github.com/IT-Kamianets/theme-bulma.git",
+	},
+	ternopil: {
+		"Angular default project": "https://github.com/ternopil-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/ternopil-space/ngx-horeca.git",
+	},
+	uman: {
+		"Angular default project": "https://github.com/uman-it-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/uman-it-space/ngx-horeca.git",
+	},
+	volyn: {
+		"Angular default project": "https://github.com/volyn-it-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/volyn-it-space/ngx-horeca.git",
+	},
+	vinnytsia: {
+		"Angular default project": "https://github.com/vinnytsia-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/vinnytsia-space/ngx-horeca.git",
+	},
+	frankivsk: {
+		"Angular default project": "https://github.com/frankivsk-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/frankivsk-space/ngx-horeca.git",
+	},
+	chernivtsi: {
+		"Angular default project": "https://github.com/chernivtsi-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/chernivtsi-space/ngx-horeca.git",
+	},
+	london: {
+		"Angular default project": "https://github.com/london-it-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/london-it-space/ngx-horeca.git",
+	},
+}
 
 /**
  * Create new project (moved from runner)
@@ -102,10 +140,9 @@ module.exports.newProject = async function (waw) {
 					// map selected label -> repo value
 					selected = mainValues[mainLabels.indexOf(selected)];
 
-					// nested selection: IT Kamianets
-					if (selected === "itkp") {
-						const labels = Object.keys(itkp);
-						const values = Object.values(itkp);
+					if (selected.startsWith('space.')) {
+						const labels = Object.keys(space[selected.replace('space.', '')]);
+						const values = Object.values(space[selected.replace('space.', '')]);
 
 						const picked = await t.choose("Which project you want to start with?", labels, {
 							prompt: "Choose number:",
@@ -280,7 +317,7 @@ module.exports.changeCss = async function (waw) {
 		});
 
 		repoLink = mainValues[mainLabels.indexOf(selected)];
-	} while(!repoLink);
+	} while (!repoLink);
 
 	t.close();
 
