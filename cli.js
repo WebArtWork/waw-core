@@ -72,3 +72,8 @@ module.exports.restart = pm2util.restart;
  *	AI
  */
 module.exports.ai = require('./util.ai');
+
+/*
+ *	Asset
+ */
+module.exports.asset = require('./util.asset');
