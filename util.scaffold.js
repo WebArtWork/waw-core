@@ -176,10 +176,6 @@ module.exports.newProject = async function (waw) {
 		// keep generated project clean
 		waw.git.remove(folder);
 
-		// also drop github workflows from templates
-		const gh = path.join(folder, ".github");
-		if (fs.existsSync(gh)) fs.rmSync(gh, { recursive: true, force: true });
-
 		t.close();
 		console.log("Your project has been generated successfully");
 		process.exit();
