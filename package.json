@@ -1,6 +1,6 @@
 {
   "name": "@wawjs/waw-core",
-  "version": "26.0.1",
+  "version": "26.0.2",
   "main": "index.js",
   "license": "MIT"
 }

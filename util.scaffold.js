@@ -6,10 +6,9 @@ const path = require("node:path");
  */
 const projectRepoList = {
 	"waw Server": "https://github.com/WebArtWork/waw-default.git",
-	"waw Angular": "https://github.com/WebArtWork/ngx-default.git",
-	"waw React": "https://github.com/WebArtWork/react-default.git",
-	"waw Vue": "https://github.com/WebArtWork/vue-default.git",
-	"waw Unity": "https://github.com/WebArtWork/unity-default.git",
+	"waw Angular default": "https://github.com/WebArtWork/ngx-default.git",
+	"waw Angular horeca": "https://github.com/WebArtWork/ngx-horeca.git",
+	"waw Angular business opearting system": "https://github.com/WebArtWork/ngx-bog.git",
 	"IT Kamianets": "space.itkp",
 	"Ternopil Space": "space.ternopil",
 	"Uman IT Space": "space.uman",
@@ -18,43 +17,66 @@ const projectRepoList = {
 	"Frankivsk Space": "space.frankivsk",
 	"Chernivtsi Space": "space.chernivtsi",
 	"London IT Space": "space.london",
+	"Greece IT Space": "space.greece",
 };
 
 const space = {
 	itkp: {
+		"Server default project": "https://github.com/IT-Kamianets/waw-default.git",
 		"Angular default project": "https://github.com/IT-Kamianets/ngx-default.git",
 		"Angular horeca project": "https://github.com/IT-Kamianets/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/IT-Kamianets/ngx-bog.git",
 		"Tailwind theme": "https://github.com/IT-Kamianets/theme-tailwind.git",
 		"Bootstrap theme": "https://github.com/IT-Kamianets/theme-bootstrap.git",
 		"Bulma theme": "https://github.com/IT-Kamianets/theme-bulma.git",
 	},
 	ternopil: {
+		"Server default project": "https://github.com/ternopil-space/waw-default.git",
 		"Angular default project": "https://github.com/ternopil-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/ternopil-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/ternopil-space/ngx-bos.git",
 	},
 	uman: {
+		"Server default project": "https://github.com/uman-it-space/waw-default.git",
 		"Angular default project": "https://github.com/uman-it-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/uman-it-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/uman-it-space/ngx-bos.git",
 	},
 	volyn: {
+		"Server default project": "https://github.com/volyn-it-space/waw-default.git",
 		"Angular default project": "https://github.com/volyn-it-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/volyn-it-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/volyn-it-space/ngx-bos.git",
 	},
 	vinnytsia: {
+		"Server default project": "https://github.com/vinnytsia-space/waw-default.git",
 		"Angular default project": "https://github.com/vinnytsia-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/vinnytsia-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/vinnytsia-space/ngx-bos.git",
 	},
 	frankivsk: {
+		"Server default project": "https://github.com/frankivsk-space/waw-default.git",
 		"Angular default project": "https://github.com/frankivsk-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/frankivsk-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/frankivsk-space/ngx-bos.git",
 	},
 	chernivtsi: {
+		"Server default project": "https://github.com/chernivtsi-space/waw-default.git",
 		"Angular default project": "https://github.com/chernivtsi-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/chernivtsi-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/chernivtsi-space/ngx-bos.git",
 	},
 	london: {
+		"Server default project": "https://github.com/london-it-space/waw-default.git",
 		"Angular default project": "https://github.com/london-it-space/ngx-default.git",
 		"Angular horeca project": "https://github.com/london-it-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/london-it-space/ngx-bos.git",
+	},
+	greece: {
+		"Server default project": "https://github.com/greece-it-space/waw-default.git",
+		"Angular default project": "https://github.com/greece-it-space/ngx-default.git",
+		"Angular horeca project": "https://github.com/greece-it-space/ngx-horeca.git",
+		"Angular business opearting system project": "https://github.com/greece-it-space/ngx-bos.git",
 	},
 }
 
