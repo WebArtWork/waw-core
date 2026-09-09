@@ -192,8 +192,8 @@ module.exports.newProject = async function (waw) {
 		const t = waw.terminal();
 		t.spinnerStart("Downloading template...");
 
-		// clone/sync repo into target folder (silent)
-		waw.git.forceSync(folder, { repo: waw.newProject.repo, branch, silent: true });
+		// clone/sync repo into target folder
+		waw.git.forceSync(folder, { repo: waw.newProject.repo, branch, silent: false });
 
 		// keep generated project clean
 		waw.git.remove(folder);
@@ -203,6 +203,7 @@ module.exports.newProject = async function (waw) {
 		process.exit();
 	} catch (e) {
 		console.error("Failed to generate project");
+		console.error(e && e.message ? e.message : e);
 		process.exit(1);
 	}
 
